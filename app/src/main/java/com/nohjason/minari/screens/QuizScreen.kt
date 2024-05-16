@@ -39,16 +39,15 @@ fun QuizScreen_main() {
             Font(R.font.pretendard_bold, FontWeight.Bold)
         )
 
-        val (box, text) = createRefs()
         //첫번째 텍스트
         Text(
             text = "퀴즈를 시작하겠습니다!",
             modifier = Modifier
-                .constrainAs(box)
+                .padding(top = 400.dp)
             ,
             textAlign = TextAlign.Center,
             fontSize = 30.sp,
-            //                fontWeight = FontWeight.SemiBold,
+//                fontWeight = FontWeight.SemiBold,
             fontFamily = pretendardFamily,
             color = Color.Black,
         )
@@ -79,6 +78,5 @@ fun QuizScreen_main() {
                 fontWeight = FontWeight.Bold
             )
         }
-
     }
 }
