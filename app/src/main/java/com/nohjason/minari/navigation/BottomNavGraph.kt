@@ -20,7 +20,6 @@ import com.nohjason.minari.screens.DictionaryScreen
 import com.nohjason.minari.screens.HomeScreen
 import com.nohjason.minari.screens.LoginScreen
 import com.nohjason.minari.screens.ProfileScreen
-import com.nohjason.minari.screens.QuizScreen
 
 @Composable
 fun BottomNavGraph(
@@ -65,9 +64,6 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Dictionary.rout) {
             DictionaryScreen()
-        }
-        composable(BottomBarScreen.Quiz.rout) {
-            QuizScreen()
         }
     }
 
