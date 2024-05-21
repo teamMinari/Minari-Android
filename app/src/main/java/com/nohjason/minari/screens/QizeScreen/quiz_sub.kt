@@ -1,8 +1,6 @@
-package com.nohjason.minari.screens
+package com.nohjason.minari.screens.QizeScreen
 
-import android.inputmethodservice.Keyboard.Row
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.traceEventStart
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,16 +25,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.nohjason.minari.R
 import com.nohjason.minari.ui.theme.MinariBlue
-import javax.sql.RowSet
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
+
+
 @Composable
-fun QuizScreen_main() {
+fun QuizScreen_sub() {
     Column {
         
         
@@ -57,25 +52,21 @@ fun QuizScreen_main() {
                 .height(117.dp)
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(Color(0xFFCC00FF0), Color(MinariBlue)),
+                        colors = listOf(Color(0xFFCC00FF0), Color(0xFF363CD5)),
                         start = androidx.compose.ui.geometry.Offset(1300f, 800f),
                         end = androidx.compose.ui.geometry.Offset(300f, 0f),
                     ),
                     shape = RoundedCornerShape(
-                        topStart = CornerSize(0.dp),
-                        topEnd = CornerSize(0.dp),
-                        bottomEnd = CornerSize(50.dp),
-                        bottomStart = CornerSize(50.dp)
+                        topStart = CornerSize(0.dp), topEnd = CornerSize(0.dp),
+                        bottomEnd = CornerSize(50.dp), bottomStart = CornerSize(50.dp)
                     )
                 ),
                 contentAlignment = Alignment.Center
         ) {
             Row {
                 Text(
-                    text = "My 포인트",
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    fontFamily = pretendardFamily
+                    text = "My 포인트", fontSize = 20.sp, fontFamily = pretendardFamily,
+                    color = Color.White
                 )
                 Text(
                     modifier = Modifier.padding(start = 38.dp),
@@ -95,9 +86,7 @@ fun QuizScreen_main() {
                 .padding(top = 194.dp)
                 .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
-            fontWeight = FontWeight.SemiBold,
-            fontFamily = pretendardFamily,
+            fontSize = 30.sp, fontWeight = FontWeight.SemiBold, fontFamily = pretendardFamily,
             color = Color.Black
         )
 
@@ -108,8 +97,7 @@ fun QuizScreen_main() {
                 .fillMaxWidth()
                 .padding(top = 6.dp)
                 .align(Alignment.CenterHorizontally),
-            fontWeight = FontWeight.Medium,
-            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium, fontFamily = pretendardFamily,
             color = Color(0xFF363CD5)
         )
 
@@ -134,8 +122,4 @@ fun QuizScreen_main() {
             )
         }
     }
-}
-
-fun Color(color: Color): Color {
-
 }
