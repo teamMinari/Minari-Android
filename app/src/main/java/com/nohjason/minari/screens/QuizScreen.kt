@@ -1,5 +1,8 @@
 package com.nohjason.minari.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,9 +12,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.traceEventStart
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -36,7 +41,18 @@ fun QuizScreen_main() {
             Font(R.font.pretendard_semibold, FontWeight.SemiBold),
             Font(R.font.pretendard_bold, FontWeight.Bold)
         )
-        val a = 100.toString()
+
+        Box(modifier = Modifier
+            .width(360.dp)
+            .height(117.dp)
+
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color(0xFFCC00FF0), Color(0xFF363CD5)),
+                    start = androidx.compose.ui.geometry.Offset(1300f, 800f),
+                    end = androidx.compose.ui.geometry.Offset(300f, 0f)
+            )
+        ))
 
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -54,7 +70,7 @@ fun QuizScreen_main() {
                 .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 30.sp,
-//                fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold,
             fontFamily = pretendardFamily,
             color = Color.Black
         )
