@@ -6,8 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
 fun QuizScreen_main() {
     Column {
