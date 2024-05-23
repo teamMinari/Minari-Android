@@ -1,5 +1,8 @@
 package com.nohjason.minari.screens.QizeScreen
 
+import android.util.Xml
+import androidx.annotation.XmlRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -145,13 +149,8 @@ fun QuizScreen_not(){
         modifier = Modifier.fillMaxSize()
     ){
         point_box()
-        Box(modifier = Modifier
-            .padding(top = 133.dp)
-            .width(150.dp)
-            .height(150.dp)
-            .background(color = Color.White)
-            .align(Alignment.CenterHorizontally))
-
+        Image(
+            painterResource(id = R.drawable.emoji__tired_face_), contentDescription = null)
 
         Text(modifier = Modifier
             .align(Alignment.CenterHorizontally)
