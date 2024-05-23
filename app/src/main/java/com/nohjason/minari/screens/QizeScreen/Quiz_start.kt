@@ -1,7 +1,5 @@
 package com.nohjason.minari.screens.QizeScreen
 
-import android.util.Xml
-import androidx.annotation.XmlRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,8 +22,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,10 +33,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.common.io.Files.append
 import com.nohjason.minari.R
+import com.nohjason.minari.navigation.BottomNavGraph
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.MinariPurple
+import com.nohjason.minari.ui.theme.gradation
 
 //폰트
 val pretendardFamily = FontFamily(
@@ -49,15 +46,16 @@ val pretendardFamily = FontFamily(
     Font(R.font.pretendard_semibold, FontWeight.SemiBold),
     Font(R.font.pretendard_bold, FontWeight.Bold)
 )
+
 @Composable
-fun point_box() {
+fun Point_box() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.1475f)
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(MinariPurple, MinariBlue),
+                    colors = gradation,
                     start = androidx.compose.ui.geometry.Offset(1300f, 800f),
                     end = androidx.compose.ui.geometry.Offset(300f, 0f),
                 ),
@@ -88,7 +86,7 @@ fun QuizScreen_start() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ){
-        point_box()
+        Point_box()
 
         Text(
             text = "퀴즈를 시작하겠습니다!",
@@ -132,10 +130,8 @@ fun QuizScreen_start() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
-fun QuizScreen_not(){
+fun QuizScreen_not_start(){
     val guide_text = buildAnnotatedString {
         append("현재")
         withStyle(style = SpanStyle(color = MinariBlue)) {
@@ -148,9 +144,12 @@ fun QuizScreen_not(){
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ){
-        point_box()
+        Point_box()
         Image(
-            painterResource(id = R.drawable.emoji__tired_face_), contentDescription = null)
+            painterResource(id = R.drawable.emoji_tired), contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize(0.45f)
+                .padding(top = 133.dp))
 
         Text(modifier = Modifier
             .align(Alignment.CenterHorizontally)

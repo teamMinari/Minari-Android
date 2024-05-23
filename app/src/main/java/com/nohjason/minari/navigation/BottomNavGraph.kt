@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,9 +23,10 @@ import com.nohjason.minari.screens.HomeScreen
 import com.nohjason.minari.screens.LoginScreen
 import com.nohjason.minari.screens.ProfileScreen
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BottomNavGraph(
-    navController: NavHostController,
+    navController: NavHostController
 ) {
     val auth = Firebase.auth
     var user by remember { mutableStateOf(auth.currentUser) }
