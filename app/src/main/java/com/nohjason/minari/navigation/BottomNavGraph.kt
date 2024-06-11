@@ -19,7 +19,7 @@ import com.nohjason.minari.firebase.rememberFirebaseAuthLauncher
 import com.nohjason.minari.screens.DictionaryScreen
 import com.nohjason.minari.screens.HomeScreen
 import com.nohjason.minari.screens.LoginScreen
-import com.nohjason.minari.screens.ProfileScreen
+import com.nohjason.minari.screens.profile.ProfileScreen
 import com.nohjason.minari.screens.QuizScreen
 
 @Composable
