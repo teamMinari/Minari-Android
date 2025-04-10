@@ -1,9 +1,4 @@
-package com.nohjason.minari.screens.login.response
-
-data class LoginRequest(
-    val id: String,
-    val password: String
-)
+package com.nohjason.minari.screens.auth.data.model
 
 data class LoginResponse(
     val status: Int,

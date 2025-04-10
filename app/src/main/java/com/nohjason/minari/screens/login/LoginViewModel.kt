@@ -1,10 +1,11 @@
-package com.nohjason.minari.screens.login
+/* package com.nohjason.minari.screens.login
 
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nohjason.minari.preferences.getPreferences
+import com.nohjason.minari.screens.auth.data.model.LoginResponse
 import com.nohjason.minari.screens.login.response.LoginRequest
 import com.nohjason.minari.screens.login.response.LoginResponse
 import com.nohjason.minari.screens.login.response.RegisterRequest
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+
 
 class LoginViewModel : ViewModel() {
     private val _loginRequest = MutableStateFlow<LoginResponse?>(null)
@@ -67,4 +69,4 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-}
+} */

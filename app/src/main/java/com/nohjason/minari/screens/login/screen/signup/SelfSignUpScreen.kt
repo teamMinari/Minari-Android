@@ -32,13 +32,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
 import com.nohjason.minari.screens.login.LoginTextField
-import com.nohjason.minari.screens.login.LoginViewModel
-import com.nohjason.minari.screens.login.Screens
+import com.nohjason.minari.navigation.Screens
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.poppins_regular
 import com.nohjason.minari.ui.theme.poppins_semibold
 
-@Composable
+/* @Composable
 fun SelfSignUpScreen(
     navController: NavController,
     loginViewModel: LoginViewModel = viewModel()
@@ -197,4 +197,4 @@ fun SelfSignUpScreen(
 @Composable
 fun TestSignUp() {
     SelfSignUpScreen(navController = rememberNavController())
-}
+} */

@@ -54,8 +54,10 @@ fun NewsCategoryButton(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun TestNewsCategory() {
-//    NewsCategoryButton()
-//}
+@Preview(showBackground = true)
+@Composable
+fun TestNewsCategory() {
+    NewsCategoryButton(
+        onClick = {}
+    )
+}

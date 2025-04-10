@@ -1,4 +1,4 @@
-package com.nohjason.minari.screens.login
+package com.nohjason.minari.screens.auth.data.local
 
 import android.content.Context
 import android.content.SharedPreferences

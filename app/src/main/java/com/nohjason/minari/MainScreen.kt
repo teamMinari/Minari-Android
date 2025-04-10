@@ -15,8 +15,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.navigation.bottombar.BottomBar
 import com.nohjason.minari.navigation.NavGraph
-import com.nohjason.minari.screens.login.LoginViewModel
-import com.nohjason.minari.screens.login.Screens
+import com.nohjason.minari.navigation.Screens
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -61,8 +61,6 @@ fun MainScreen(
         Column(modifier = Modifier.padding(innerPadding)) {
             NavGraph(
                 navController = navController,
-//                viewModel = viewModel,
-                loginViewModel = loginViewModel
             )
         }
     }

@@ -1,6 +1,5 @@
 package com.nohjason.minari.screens.rout
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,7 +44,7 @@ import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.network.response.rout.GpsData
 import com.nohjason.minari.preferences.getFromPreferences
 import com.nohjason.minari.preferences.getPreferences
-import com.nohjason.minari.screens.login.Screens
+import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.pretendard_extra_bold
 import com.nohjason.minari.ui.theme.pretendard_medium

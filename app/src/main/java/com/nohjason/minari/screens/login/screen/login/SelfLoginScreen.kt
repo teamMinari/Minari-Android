@@ -41,14 +41,14 @@ import com.nohjason.minari.R
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.preferences.saveToPreferences
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.login.LoginTextField
-import com.nohjason.minari.screens.login.LoginViewModel
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.poppins_regular
 import com.nohjason.minari.ui.theme.poppins_semibold
 import com.nohjason.minari.ui.theme.pretendard_bold
 
-@Composable
+/*@Composable
 fun SelfLoginScreen(
     navController: NavController,
     loginViewModel: LoginViewModel
@@ -170,4 +170,4 @@ fun SelfLoginScreen(
 @Composable
 fun PreLogin() {
     SelfLoginScreen(navController = rememberNavController(), loginViewModel = viewModel())
-}
+}*/

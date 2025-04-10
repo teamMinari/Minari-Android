@@ -5,9 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,14 +17,17 @@ import androidx.navigation.compose.composable
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.preferences.getFromPreferences
 import com.nohjason.minari.preferences.getPreferences
+import com.nohjason.minari.screens.auth.ui.FirstScreen
+import com.nohjason.minari.screens.auth.ui.login_screen.LoginScreen
+import com.nohjason.minari.screens.auth.ui.register_screen.EmailScreen
+import com.nohjason.minari.screens.auth.ui.register_screen.IdScreen
+import com.nohjason.minari.screens.auth.ui.register_screen.LikeScreen
+import com.nohjason.minari.screens.auth.ui.register_screen.PasswordScreen
+import com.nohjason.minari.screens.auth.ui.register_screen.SelectJobScreen
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.home.HomeScreen
-import com.nohjason.minari.screens.login.screen.LoginScreen
-import com.nohjason.minari.screens.login.LoginViewModel
-import com.nohjason.minari.screens.login.Screens
-import com.nohjason.minari.screens.login.screen.login.SelfLoginScreen
 import com.nohjason.minari.screens.login.screen.signup.Questionnaire
 import com.nohjason.minari.screens.login.screen.signup.SelfSignUpLastScreen
-import com.nohjason.minari.screens.login.screen.signup.SelfSignUpScreen
 import com.nohjason.minari.screens.term.TermScreen
 import com.nohjason.minari.screens.news.News
 import com.nohjason.minari.screens.profile.alias_screen.AliasScreen
@@ -48,18 +49,11 @@ import com.nohjason.minari.screens.quiz.quiz_main.QuizMainScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    loginViewModel: LoginViewModel,
-    profileViewModel: ProfileViewModel = viewModel(),
-    quizViewModel: QuizViewModel = viewModel()
 ) {
     val preferences = getPreferences()
     val token = getFromPreferences(preferences, "token")
     val context = LocalContext.current
-//    val data by profileViewModel.profileData.collectAsState()
-    val data = profileViewModel.profileData.collectAsState().value
-
-
-
+//    val data = profileViewModel.profileData.collectAsState().value
 
     NavHost(
         navController = navController,
@@ -67,21 +61,32 @@ fun NavGraph(
     ) {
 
         composable(Screens.FirstScreen.rout) {
-            LoginScreen(
-                navController = navController,
-            )
+            FirstScreen(navController = navController)
         }
 
-        composable(
-            route = Screens.LastSignup.rout,
-        ) {
-            SelfSignUpLastScreen(
-                navController = navController
-            )
+        //singup
+        composable(route = Screens.LastSignup.rout) {
+            SelfSignUpLastScreen(navController = navController)
+        }
+        composable(Screens.IdScreen.rout) {
+            IdScreen(navController = navController)
+        }
+        composable(Screens.PasswordScreen.rout) {
+            PasswordScreen(navController = navController)
+        }
+        composable(Screens.EmailScreen.rout) {
+            EmailScreen(navController = navController)
+        }
+        composable(Screens.LikeScreen.rout) {
+            LikeScreen(navController = navController)
+        }
+        composable(Screens.SelectJobScreen.rout) {
+            SelectJobScreen(navController = navController)
         }
 
+        //login
         composable(Screens.Login.rout) {
-            SelfLoginScreen(navController = navController, loginViewModel = loginViewModel)
+            LoginScreen(navController = navController)
         }
 
         // 튜토리얼
@@ -103,13 +108,13 @@ fun NavGraph(
 
         // 퀴즈
         composable(BottomScreen.Quiz.rout) {
-            QuizMainScreen(navHostController = navController, quizViewModel = quizViewModel, token=token)
+//            QuizMainScreen(navHostController = navController, quizViewModel = quizViewModel, token=token)
         }
 
         // 프로필
         composable(BottomScreen.Profile.rout) {
             LaunchedEffect(Unit) {
-                profileViewModel.getProfile(token)
+//                profileViewModel.getProfile(token)
             }
             ProfileMAinScreen(navHostController = navController, profileData = profileData)
         }
@@ -170,9 +175,9 @@ fun NavGraph(
                 )
             }
         ) {
-            SelfSignUpScreen(
-                navController = navController
-            )
+//            SelfSignUpScreen(
+//                navController = navController
+//            )
         }
 
 
@@ -187,7 +192,7 @@ fun NavGraph(
                 )
             }
         ) {
-            SeletO(navHostController = navController, quizViewModel = quizViewModel)
+//            SeletO(navHostController = navController, quizViewModel = quizViewModel)
         }
         composable(
             Screens.QuizSelectX.rout,
@@ -198,7 +203,7 @@ fun NavGraph(
                 )
             }
         ) {
-            SeletX(navHostController = navController, quizViewModel = quizViewModel)
+//            SeletX(navHostController = navController, quizViewModel = quizViewModel)
         }
         composable(
             Screens.QuizPlaycreen.rout,
@@ -209,7 +214,7 @@ fun NavGraph(
                 )
             }
         ) {
-            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
+//            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
         }
         composable(
             Screens.QuizEndScreen.rout,
@@ -220,7 +225,7 @@ fun NavGraph(
                 )
             }
         ) {
-            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
+//            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
         }
 
 

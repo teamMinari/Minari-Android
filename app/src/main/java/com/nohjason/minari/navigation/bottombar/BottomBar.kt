@@ -14,8 +14,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import com.nohjason.minari.ui.theme.MinariBlue
-import kotlin.math.round
+import com.nohjason.minari.ui.theme.MinariGray300
 
 @Composable
 fun BottomBar(
@@ -67,7 +66,7 @@ fun RowScope.AddItem(
             Log.d("TAG", "AddItem: ${bottomScreen.rout}")
             navController.navigate(bottomScreen.rout)
         },
-        selectedContentColor = MinariBlue,
+        selectedContentColor = MinariGray300,
         unselectedContentColor = Color.LightGray,
         modifier = Modifier.background(Color.White)
     )

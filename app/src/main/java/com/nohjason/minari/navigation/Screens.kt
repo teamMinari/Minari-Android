@@ -1,4 +1,4 @@
-package com.nohjason.minari.screens.login
+package com.nohjason.minari.navigation
 
 sealed class Screens(
     val rout: String,
@@ -18,6 +18,32 @@ sealed class Screens(
         rout = "signup",
         title = "Signup",
     )
+
+    object IdScreen : Screens(
+        rout = "id_screen",
+        title = "id_screen"
+    )
+
+    object PasswordScreen : Screens(
+        rout = "password_screen",
+        title ="password_screen"
+    )
+
+    object EmailScreen : Screens(
+        rout = "email_screen",
+        title ="email_screen"
+    )
+
+    object LikeScreen : Screens(
+        rout = "like_screen",
+        title = "like_screen"
+    )
+
+    object SelectJobScreen : Screens(
+        rout = "select_job_screen",
+        title = "select_job_screen"
+    )
+
 
     data object Question : Screens(
         rout = "question",

@@ -9,10 +9,10 @@ import com.nohjason.minari.network.response.rout.Grape
 import com.nohjason.minari.network.response.rout.GrapeSeed
 import com.nohjason.minari.network.response.rout.Grapes
 import com.nohjason.minari.network.response.rout.GrapesAll
-import com.nohjason.minari.screens.login.response.LoginRequest
-import com.nohjason.minari.screens.login.response.LoginResponse
-import com.nohjason.minari.screens.login.response.RegisterRequest
-import com.nohjason.minari.screens.login.response.RegisterResponse
+import com.nohjason.minari.screens.auth.data.model.LoginRequest
+import com.nohjason.minari.screens.auth.data.model.LoginResponse
+import com.nohjason.minari.screens.auth.data.model.RegisterRequest
+import com.nohjason.minari.screens.auth.data.model.RegisterResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpsResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpseResponse

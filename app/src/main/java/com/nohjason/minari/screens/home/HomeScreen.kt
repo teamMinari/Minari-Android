@@ -69,7 +69,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.nohjason.minari.R
 import com.nohjason.minari.preferences.getFromPreferences
 import com.nohjason.minari.preferences.getPreferences
-import com.nohjason.minari.screens.login.Screens
+import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.screens.profile.profile_data.ProfileViewModel
 import com.nohjason.minari.screens.profile.profile_element.RewardBar
 import com.nohjason.minari.screens.rout.GrapeViewModel
