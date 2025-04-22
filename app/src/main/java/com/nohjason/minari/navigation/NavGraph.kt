@@ -26,8 +26,6 @@ import com.nohjason.minari.screens.auth.ui.register_screen.PasswordScreen
 import com.nohjason.minari.screens.auth.ui.register_screen.SelectJobScreen
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.home.HomeScreen
-import com.nohjason.minari.screens.login.screen.signup.Questionnaire
-import com.nohjason.minari.screens.login.screen.signup.SelfSignUpLastScreen
 import com.nohjason.minari.screens.term.TermScreen
 import com.nohjason.minari.screens.news.News
 import com.nohjason.minari.screens.profile.alias_screen.AliasScreen
@@ -65,9 +63,6 @@ fun NavGraph(
         }
 
         //singup
-        composable(route = Screens.LastSignup.rout) {
-            SelfSignUpLastScreen(navController = navController)
-        }
         composable(Screens.IdScreen.rout) {
             IdScreen(navController = navController)
         }
@@ -235,9 +230,7 @@ fun NavGraph(
         composable(
             route = Screens.Question.rout,
         ) {
-            Questionnaire(
-                navController = navController
-            )
+
         }
     }
 }

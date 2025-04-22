@@ -60,8 +60,6 @@ android {
 }
 
 dependencies {
-
-
     //android hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
@@ -72,7 +70,6 @@ dependencies {
     implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc06")
 
     // Coil
-//    implementation ("io.coil-kt:coil:2.6.0")
     implementation ("io.coil-kt:coil-compose:2.6.0")
 
     // Pager

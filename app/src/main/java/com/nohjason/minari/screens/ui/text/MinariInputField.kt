@@ -4,12 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,11 +26,11 @@ import com.nohjason.minari.ui.theme.b2_medium
 
 @Composable
 fun MinariInputField(
-    icon: Painter?, // 아이콘을 리소스 ID로 받음 (null 허용)
+    icon: Painter?,
     label: String,
-    onValueChange: (String) -> Unit = { }, // 기본값을 빈 람다로 설정
-    onClickAction: () -> Unit = {}, // 기본값을 빈 람다로 설정
-    isPassword: Boolean = false // 비밀번호 필드 여부
+    onValueChange: (String) -> Unit = { },
+    onClickAction: () -> Unit = {},
+    isPassword: Boolean = false
 ) {
     var text by remember { mutableStateOf("") }
 
@@ -34,14 +38,13 @@ fun MinariInputField(
         value = text,
         onValueChange = {
             text = it
-            onValueChange(it) // 외부로 값을 전달
+            onValueChange(it)
         },
         placeholder = {
             Text(label, color = MinariGray300, style = b2_medium)
         },
-        textStyle =
-            if (text.isEmpty()) b2_medium.copy(color = MinariGray300)
-            else b2_bold.copy(color = MinariGray800),
+        textStyle = if (text.isEmpty()) b2_medium.copy(color = MinariGray300)
+        else b2_bold.copy(color = MinariGray800),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp)
@@ -65,9 +68,18 @@ fun MinariInputField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = MinariGray800
-        )
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { /* 키보드 완료 버튼 처리 */ }
+        ),
+        singleLine = true
     )
 }
+
 
 
 

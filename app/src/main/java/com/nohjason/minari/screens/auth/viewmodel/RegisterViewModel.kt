@@ -19,8 +19,9 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-//@HiltViewModel
+@HiltViewModel
 class RegisterViewModel @Inject constructor() : ViewModel() {
+//    class RegisterViewModel : ViewModel() {
     private val _registerResponse = MutableStateFlow<RegisterResponse?>(null)
     val registerResponse: StateFlow<RegisterResponse?> = _registerResponse
 

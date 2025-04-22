@@ -64,9 +64,9 @@ fun MinariTextField(
 @Composable
 @Preview
 fun MinariTextFieldPreview() {
-    MinariTextField(
-        value = "Search",
-        onValueChange = { },
-        onClick = { },
-    )
+//    MinariSearchField(
+//        value = "Search",
+//        onValueChange = { },
+//        onClick = { },
+//    )
 }

@@ -3,9 +3,9 @@ package com.nohjason.minari.screens.news
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nohjason.minari.network.response.rout.GrapeSeed
 import com.nohjason.minari.screens.rout.response.GetAllNews
 import com.nohjason.myapplication.network.RetrofitInstance.api
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,8 +13,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class NewsViewModel: ViewModel() {
+class NewsViewModel : ViewModel() {
     private val _getAllNews = MutableStateFlow<GetAllNews?>(null)
     val getAllNews: StateFlow<GetAllNews?> = _getAllNews
 

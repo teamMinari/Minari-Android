@@ -1,16 +1,30 @@
 package com.nohjason.minari.screens.ui.button
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.nohjason.minari.R
+import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariGray200
 import com.nohjason.minari.ui.theme.b2_bold
 import com.nohjason.minari.ui.theme.button_bold
@@ -24,6 +38,7 @@ fun MinariButton(
     buttonColor: Color, // 버튼 배경 컬러
     line: Boolean = false, // Stroke 선 여부
     enabled: Boolean = true, // 버튼 활성화 여부
+    icon: Painter? = null,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -56,34 +71,54 @@ fun MinariButton(
             else -> Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
         }
 
-        Text(text = text, color = textColor, style = textStyle, modifier = padding)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (icon != null) {
+                Icon(
+                    painter = icon,
+                    contentDescription = null,
+                    tint = textColor,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+            Text(
+                text = text,
+                color = textColor,
+                style = textStyle,
+                modifier = padding
+            )
+        }
     }
 }
 
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreMinariButton() {
-//    Column {
-//        MinariButton(
-//            text = "활",
-//            enabled = true,
-//            onClick = {},
-//            size = "Small",
-//            buttonColor = MinariBlue500,
-//            textColor = Color.White,
-//            line = false
-//        )
-//
-//        MinariButton(
-//            text = "비활",
-//            enabled = false,
-//            onClick = {},
-//            size = "Small",
-//            buttonColor = MinariBlue500,
-//            textColor = Color.White,
-//            line = false
-//        )
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun PreMinariButton() {
+    Column {
+        MinariButton(
+            text = "활",
+            enabled = true,
+            onClick = {},
+            size = "Small",
+            buttonColor = MinariBlue500,
+            textColor = Color.White,
+            line = false,
+            icon = painterResource(id = R.drawable.ic_back)
+        )
+
+        MinariButton(
+            text = "비활",
+            enabled = false,
+            onClick = {},
+            size = "Small",
+            buttonColor = MinariBlue500,
+            textColor = Color.White,
+            line = false
+        )
+    }
+}

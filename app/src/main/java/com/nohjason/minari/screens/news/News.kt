@@ -41,8 +41,6 @@ import coil.compose.AsyncImage
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.preferences.getFromPreferences
 import com.nohjason.minari.preferences.getPreferences
-import com.nohjason.minari.screens.home.SwipeNews
-import com.nohjason.minari.screens.home.drawColoredShadow
 
 @Composable
 fun News(
@@ -64,9 +62,9 @@ fun News(
         modifier = Modifier.padding(top = 20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        item {
-            SwipeNews()
-        }
+//        item {
+//            SwipeNews()
+//        }
         if (getallNews != null) {
             items(getallNews!!.data) { item ->
                 Row(
@@ -108,8 +106,8 @@ fun News(
 }
 
 
-@Preview(showSystemUi = true)
-@Composable
-private fun Test() {
-    News(navController = rememberNavController())
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Test() {
+//    News(navController = rememberNavController())
+//}
