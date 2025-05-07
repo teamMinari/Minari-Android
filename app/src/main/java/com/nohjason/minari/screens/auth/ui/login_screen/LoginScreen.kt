@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,6 +86,7 @@ fun LoginScreen(
     fun heightRatio(ratio: Float) = screenHeight * ratio
     fun widthRatio(ratio: Float) = screenWidth * ratio
 
+    // 로그인 성공 시 토큰, 자동로그인 플래그 저장
     LaunchedEffect(loginResponse) {
         if (loginResponse != null) {
             preferencesManager.saveToken(loginResponse!!.data.accessToken)
@@ -92,10 +94,14 @@ fun LoginScreen(
                 preferencesManager.saveRefreshToken(loginResponse!!.data.refreshToken)
                 preferencesManager.setAutoLogin(true)
             } else {
+                // 저장 안 할 때는 refreshToken/autoLogin clear
                 preferencesManager.saveRefreshToken("")
                 preferencesManager.setAutoLogin(false)
             }
-            navController.navigate(BottomScreen.Home.rout) { popUpTo(0) }
+            navController.navigate(BottomScreen.Home.rout) {
+                popUpTo(0)
+            }
+            Log.d("TAG", "SelfLoginScreen: ${loginResponse!!.data.accessToken}")
         }
     }
 

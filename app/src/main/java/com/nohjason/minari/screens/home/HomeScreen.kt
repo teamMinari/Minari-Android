@@ -60,6 +60,7 @@ import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.b2_bold
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 
@@ -67,13 +68,12 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun HomeScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    var selectedCategory by remember { mutableStateOf("finance") }
-
     var text by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var backPressedTime by rememberSaveable { mutableStateOf(0L) }
+    var selectedCategory by remember { mutableStateOf("finance") }
 
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }

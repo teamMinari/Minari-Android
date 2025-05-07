@@ -7,13 +7,19 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.content.Context
+import com.google.firebase.inject.Provider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Authenticator
+import okhttp3.Route
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
 
 //object RetrofitInstance {
 //    private const val BASE_URL = "https://cheongfordo.kr"
@@ -47,52 +53,55 @@ import javax.inject.Singleton
 //            .create(ApiService::class.java)
 //    }
 //}
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AuthApiService
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RetrofitInstance {
+object NetworkModule {
 
     private const val BASE_URL = "https://cheongfordo.kr"
 
     @Provides
     @Singleton
-    fun providePreferencesManager(@ApplicationContext context: Context): PreferencesManager {
-        return PreferencesManager(context)
-    }
+    fun providePreferencesManager(@ApplicationContext context: Context): PreferencesManager =
+        PreferencesManager(context)
 
-    // OkHttpClient는 ApiService 의존성 제거, TokenAuthenticator는 PreferencesManager만 받음
+    @AuthApiService
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        preferencesManager: PreferencesManager,
-        tokenAuthenticator: TokenAuthenticator
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .authenticator(tokenAuthenticator)
-            .build()
-    }
+    fun provideAuthApiService(): ApiService = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(OkHttpClient.Builder().build())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 
-    // ApiService는 OkHttpClient를 주입받아 생성
-    @Provides
-    @Singleton
-    fun provideApiService(okHttpClient: OkHttpClient): ApiService {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService::class.java)
-    }
-
-    // TokenAuthenticator를 별도로 @Provides 하거나 @Inject 생성자로 관리
     @Provides
     @Singleton
     fun provideTokenAuthenticator(
         preferencesManager: PreferencesManager,
-        apiService: ApiService
-    ): TokenAuthenticator {
-        return TokenAuthenticator(preferencesManager, apiService)
-    }
+        @AuthApiService apiService: ApiService  // AuthApiService로 ApiService 주입
+    ): TokenAuthenticator = TokenAuthenticator(preferencesManager, apiService)
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient = OkHttpClient.Builder()
+        .authenticator(tokenAuthenticator)
+        // 필요에 따라 타임아웃, 로깅 인터셉터 등 추가 가능
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideApiService(okHttpClient: OkHttpClient): ApiService = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 }
 
 
