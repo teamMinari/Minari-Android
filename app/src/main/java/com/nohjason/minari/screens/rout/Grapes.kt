@@ -43,8 +43,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nohjason.minari.R
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.MinariWhite
@@ -59,12 +57,12 @@ fun Grapes(
     viewModel: GrapeViewModel = viewModel(),
     id: Int,
 ) {
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+//    val preferences = getPreferences()
+//    val token = getFromPreferences(preferences, "token")
     val gps by viewModel.gpsDetail.collectAsState()
     LaunchedEffect(key1 = Unit) {
         viewModel.getGps(
-            token = token,
+//            token = token,
             gpsId = id
         )
     }
@@ -180,8 +178,8 @@ fun Grapes(
                         gpLike = item.gpLike,
                         gpseCnt = item.gpseCnt,
                         gpseCntMax = item.gpseCntMax,
-                        token = token,
-                        likesClick = { viewModel.likes(token, "GRAPE", item.gpId) }
+//                        token = token,
+                        likesClick = { viewModel.likes("GRAPE", item.gpId) }
                     )
                 }
             }
@@ -206,7 +204,6 @@ fun Gpse(
     gpseCnt: Int,
     gpseCntMax: Int,
     viewModel: GrapeViewModel = viewModel(),
-    token: String,
     likesClick: () -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -280,7 +277,7 @@ fun Gpse(
             val grape by viewModel.allGp.collectAsState()
             LaunchedEffect(key1 = Unit) {
                 viewModel.getAllGrape(
-                    token = token,
+//                    token = token,
                     gpId = gpId
                 )
             }

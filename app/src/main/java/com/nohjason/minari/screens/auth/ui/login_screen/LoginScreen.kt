@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,8 +39,7 @@ import androidx.navigation.NavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
-import com.nohjason.minari.preferences.getPreferences
-import com.nohjason.minari.preferences.saveToPreferences
+import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.ui.button.MinariButton
 import com.nohjason.minari.screens.ui.text.MinariInputField
@@ -60,6 +60,10 @@ fun LoginScreen(
     navController: NavController,
     loginViewModel: LoginViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
+    val loginResponse by loginViewModel.loginRequest.collectAsState()
+
     var id by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -67,15 +71,25 @@ fun LoginScreen(
 
     val isButtonEnabled = id.isNotEmpty() && password.isNotEmpty()
 
-    val preferences = getPreferences()
-    val loginResponse by loginViewModel.loginRequest.collectAsState()
+    // 로그인 성공 시 토큰, 자동로그인 플래그 저장
     LaunchedEffect(loginResponse) {
-        if (loginResponse != null ) {
-            saveToPreferences(preferences, "token", loginResponse!!.data.accessToken)
-            navController.navigate(BottomScreen.Home.rout)
+        if (loginResponse != null) {
+            preferencesManager.saveToken(loginResponse!!.data.accessToken)
+            if (saveLogin) {
+                preferencesManager.saveRefreshToken(loginResponse!!.data.refreshToken)
+                preferencesManager.setAutoLogin(true)
+            } else {
+                // 저장 안 할 때는 refreshToken/autoLogin clear
+                preferencesManager.saveRefreshToken("")
+                preferencesManager.setAutoLogin(false)
+            }
+            navController.navigate(BottomScreen.Home.rout) {
+                popUpTo(0)
+            }
             Log.d("TAG", "SelfLoginScreen: ${loginResponse!!.data.accessToken}")
         }
     }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,7 +151,8 @@ fun LoginScreen(
             Text(
                 text = "로그인 저장",
                 style = button_medium,
-                color = Color(0xFF171717)
+                color = Color(0xFF171717),
+                modifier = Modifier.clickable { saveLogin = !saveLogin }
             )
         }
 
@@ -154,7 +169,6 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             loginViewModel.login(id = id, password = password)
-
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -216,6 +230,7 @@ fun LoginScreen(
         }
     }
 }
+
 
 
 

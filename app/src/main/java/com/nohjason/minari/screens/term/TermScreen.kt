@@ -38,8 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.screens.ui.text.MinariTextField
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.screens.rout.GrapeViewModel
@@ -56,12 +54,12 @@ fun TermScreen(
 ) {
     val getTerm by grapeViewModel.getTerm.collectAsState()
     var text by remember { mutableStateOf("") }
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+//    val preferences = getPreferences()
+//    val token = getFromPreferences(preferences, "token")
 
     LaunchedEffect(key1 = Unit) {
-        grapeViewModel.getTerm(token, title)
-        grapeViewModel.getAllLikesTerm(token)
+        grapeViewModel.getTerm( title)
+        grapeViewModel.getAllLikesTerm()
     }
 
     Scaffold(
@@ -76,7 +74,7 @@ fun TermScreen(
                         value = text,
                         onValueChange = { text = it },
                         onClick = {
-                            grapeViewModel.getTerm(token, text)
+                            grapeViewModel.getTerm(text)
                             navController.navigate("test/${text}")
                         }
                     )
@@ -122,7 +120,7 @@ fun TermScreen(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                        grapeViewModel.likes(token, "TERM", item.termId, item.termNm)
+                                        grapeViewModel.likes("TERM", item.termId, item.termNm)
                                     },
                                 tint = if (getTerm!!.data.termLike) Color.Unspecified else Color.Gray
                             )

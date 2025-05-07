@@ -29,6 +29,7 @@ import androidx.compose.material3.*
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import com.nohjason.minari.ui.theme.MinariGray800
+import com.nohjason.minari.ui.theme.button_medium
 import com.nohjason.minari.ui.theme.caption_bold
 import com.nohjason.minari.ui.theme.caption_medium
 
@@ -69,7 +70,7 @@ fun NewsButton(
 
         Text(
             text = text,
-            style = caption_bold,
+            style = button_medium,
             color = MinariGray700,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()

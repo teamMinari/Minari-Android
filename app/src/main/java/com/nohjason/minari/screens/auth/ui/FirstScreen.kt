@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,14 +20,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
+import com.nohjason.minari.preferences.PreferencesManager
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.ui.button.MinariButton
 import com.nohjason.minari.screens.ui.text.MinariText
 import com.nohjason.minari.ui.theme.MinariBlue
@@ -40,11 +45,14 @@ import com.nohjason.minari.ui.theme.rixfont
 import kotlinx.coroutines.delay
 @Composable
 fun FirstScreen(
-    navController: NavController
+    navController: NavController,
+    loginViewModel: LoginViewModel = viewModel()
 ) {
     var isFirstChatVisible by remember { mutableStateOf(false) }
     var isSecondChatVisible by remember { mutableStateOf(false) }
     var contentOffset by remember { mutableStateOf(50.dp) }
+
+    val context = LocalContext.current
 
     // 애니메이션 적용된 캐릭터 Y 좌표
     var characterOffset by remember { mutableStateOf(150.dp) }

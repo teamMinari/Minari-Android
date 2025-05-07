@@ -46,8 +46,6 @@ import androidx.navigation.compose.rememberNavController
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.nohjason.minari.R
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.screens.quiz.QuizeViewModel
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.MinariWhite
@@ -62,12 +60,12 @@ fun Grape(
     gpseId: Int,
     title: String,
 ) {
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+//    val preferences = getPreferences()
+//    val token = getFromPreferences(preferences, "token")
     val gpse by grapeViewModel.gpse.collectAsState()
     LaunchedEffect(key1 = Unit) {
         grapeViewModel.getGpse(
-            token = token,
+//            token = token,
             gpseId = gpseId
         )
     }
@@ -150,7 +148,7 @@ fun Grape(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                        grapeViewModel.likes(token, "GRAPESEED", gpseId)
+                                        grapeViewModel.likes( "GRAPESEED", gpseId)
                                     },
                                 tint = if (gpse!!.data.gpseLike) MinariBlue else Color.Gray,
                             )

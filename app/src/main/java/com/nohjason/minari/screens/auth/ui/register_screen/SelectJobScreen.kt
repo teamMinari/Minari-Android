@@ -40,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
-import com.nohjason.minari.preferences.saveToPreferences
 import com.nohjason.minari.screens.auth.viewmodel.RegisterViewModel
 import com.nohjason.minari.ui.theme.MinariGray200
 import com.nohjason.minari.ui.theme.MinariGray800

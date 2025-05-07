@@ -47,130 +47,117 @@ val inter_bold = FontFamily(Font(R.font.inter_bold))
 val inter_semibold = FontFamily(Font(R.font.inter_semibold))
 
 // TextStyle 정의
+// FontFamily 정의는 그대로 유지
+
 val h1_bold = TextStyle(
     fontFamily = pretendard_bold,
     fontWeight = FontWeight.Bold,
-    fontSize = 24.sp,
-    lineHeight = 41.6.sp,
-    letterSpacing = 0.sp
+    fontSize = 32.sp,
+    lineHeight = 41.6.sp
 )
 
 val h1_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 32.sp,
-    lineHeight = 41.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 41.6.sp
 )
 
 val h2_bold = TextStyle(
     fontFamily = inter_bold,
     fontWeight = FontWeight.Bold,
     fontSize = 28.sp,
-    lineHeight = 41.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 36.4.sp
 )
 
 val h2_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 28.sp,
-    lineHeight = 41.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 36.4.sp
 )
 
 val h3_bold = TextStyle(
     fontFamily = inter_bold,
-    fontWeight = FontWeight.Bold,
+    fontWeight = FontWeight.SemiBold,
     fontSize = 24.sp,
-    lineHeight = 33.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 33.6.sp
 )
 
 val h3_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
-    fontSize = 28.sp,
-    lineHeight = 33.6.sp,
-    letterSpacing = 0.sp
+    fontSize = 24.sp,
+    lineHeight = 33.6.sp
 )
 
 val h4_bold = TextStyle(
     fontFamily = inter_bold,
     fontWeight = FontWeight.Bold,
     fontSize = 20.sp,
-    lineHeight = 33.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 28.sp
 )
 
 val h4_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 20.sp,
-    lineHeight = 33.6.sp,
-    letterSpacing = 0.sp
+    lineHeight = 28.sp
 )
 
 val b1_bold = TextStyle(
-    fontFamily = inter_semibold,
+    fontFamily = inter_bold,
     fontWeight = FontWeight.SemiBold,
     fontSize = 18.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 27.sp
 )
 
 val b1_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 18.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 27.sp
 )
 
 val b2_bold = TextStyle(
-    fontFamily = inter_semibold,
-    fontWeight = FontWeight.SemiBold,
+    fontFamily = inter_bold,
+    fontWeight = FontWeight.Normal,
     fontSize = 16.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 24.sp
 )
 
 val b2_medium = TextStyle(
     fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 16.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 24.sp
 )
 
 val button_bold = TextStyle(
-    fontFamily = inter_semibold,
+    fontFamily = inter_bold,
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 21.sp
 )
 
 val button_medium = TextStyle(
-    fontFamily = pretendard_regular,
+    fontFamily = pretendard_medium,
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 21.sp
 )
 
 val caption_bold = TextStyle(
     fontFamily = inter_bold,
     fontWeight = FontWeight.SemiBold,
     fontSize = 12.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 18.sp
 )
 
 val caption_medium = TextStyle(
     fontFamily = pretendard_regular,
     fontWeight = FontWeight.Normal,
     fontSize = 12.sp,
-    lineHeight = 36.sp,
-    letterSpacing = 0.sp
+    lineHeight = 18.sp
 )
+

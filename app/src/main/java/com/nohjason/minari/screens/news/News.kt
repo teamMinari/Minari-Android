@@ -34,25 +34,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.nohjason.minari.navigation.bottombar.BottomScreen
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 
 @Composable
 fun News(
     navController: NavController,
-    newsViewModel: NewsViewModel = viewModel()
+    newsViewModel: NewsViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val getallNews by newsViewModel.getAllNews.collectAsState()
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
     LaunchedEffect(Unit) {
-        newsViewModel.getAllNews(token, "main")
+        newsViewModel.getAllNews("finance")
     }
     BackHandler(onBack = {
         navController.popBackStack(BottomScreen.Home.rout, inclusive = false)
@@ -108,6 +105,6 @@ fun News(
 
 //@Preview(showSystemUi = true)
 //@Composable
-//private fun Test() {
+//private fun PreNews() {
 //    News(navController = rememberNavController())
 //}

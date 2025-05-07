@@ -1,9 +1,13 @@
 package com.nohjason.minari.screens.profile.profile_data
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.myapplication.network.RetrofitInstance.api
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,37 +15,46 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 
-class ProfileViewModel : ViewModel() {
-    private val _profileData = MutableStateFlow<ProfileResponse?>(null) // 초기값은 null로 설정
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    application: Application
+) : AndroidViewModel(application) {
+
+    private val preferencesManager = PreferencesManager(application)
+
+    private val _profileData = MutableStateFlow<ProfileResponse?>(null)
     val profileData: StateFlow<ProfileResponse?> = _profileData
 
-    fun getProfile(token: String) {
+    fun getProfile() {
         viewModelScope.launch {
+            val token = preferencesManager.getToken()
+            if (token.isNullOrEmpty()) {
+                Log.e("TAG", "getProfile: 토큰 없음")
+                return@launch
+            }
             try {
                 val response = withContext(Dispatchers.IO) {
                     api.getProfile(token)
                 }
                 if (response.isSuccessful) {
                     _profileData.value = response.body()
-                    Log.d("TAG", "getProflie: 전체 포도송이 서버 통신 성공")
+                    Log.d("TAG", "getProfile: 전체 포도송이 서버 통신 성공")
                 } else {
-                    // 서버 응답 에러 처리
-                    Log.e("TAG", "getProflie: 서버 응답 에러 - 코드: ${response.code()}")
+                    Log.e("TAG", "getProfile: 서버 응답 에러 - 코드: ${response.code()}")
                 }
             } catch (e: IOException) {
-                // 네트워크 오류 처리
-                Log.e("TAG", "getProflie: 네트워크 오류", e)
+                Log.e("TAG", "getProfile: 네트워크 오류", e)
             } catch (e: HttpException) {
-                // HTTP 오류 처리
-                Log.e("TAG", "getProflie: HTTP 오류 - 코드: ${e.code()}", e)
+                Log.e("TAG", "getProfile: HTTP 오류 - 코드: ${e.code()}", e)
             } catch (e: Exception) {
-                // 기타 예외 처리
-                Log.e("TAG", "getProflie: 알 수 없는 오류", e)
+                Log.e("TAG", "getProfile: 알 수 없는 오류", e)
             }
         }
     }
 }
+
 
 

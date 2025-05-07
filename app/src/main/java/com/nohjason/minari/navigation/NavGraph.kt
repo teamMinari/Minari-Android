@@ -15,8 +15,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.nohjason.minari.navigation.bottombar.BottomScreen
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.screens.auth.ui.FirstScreen
 import com.nohjason.minari.screens.auth.ui.login_screen.LoginScreen
 import com.nohjason.minari.screens.auth.ui.register_screen.EmailScreen
@@ -48,14 +46,14 @@ import com.nohjason.minari.screens.quiz.quiz_main.QuizMainScreen
 fun NavGraph(
     navController: NavHostController,
 ) {
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+//    val preferences = getPreferences()
+//    val token = getFromPreferences(preferences, "token")
     val context = LocalContext.current
 //    val data = profileViewModel.profileData.collectAsState().value
 
     NavHost(
         navController = navController,
-        startDestination = Screens.FirstScreen.rout,
+        startDestination = BottomScreen.Home.rout,
     ) {
 
         composable(Screens.FirstScreen.rout) {
@@ -117,8 +115,8 @@ fun NavGraph(
         //저장목록
         composable(Screens.Directory.rout) {
             DirecScreen(
-                direcViewModel = DirecViewModel(),
-                token = token
+//                direcViewModel = DirecViewModel,
+//                token = token
             )
         }
 

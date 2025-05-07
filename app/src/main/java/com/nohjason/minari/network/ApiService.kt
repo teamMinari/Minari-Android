@@ -11,6 +11,8 @@ import com.nohjason.minari.network.response.rout.Grapes
 import com.nohjason.minari.network.response.rout.GrapesAll
 import com.nohjason.minari.screens.auth.data.model.LoginRequest
 import com.nohjason.minari.screens.auth.data.model.LoginResponse
+import com.nohjason.minari.screens.auth.data.model.RefreshTokenRequest
+import com.nohjason.minari.screens.auth.data.model.RefreshTokenResponse
 import com.nohjason.minari.screens.auth.data.model.RegisterRequest
 import com.nohjason.minari.screens.auth.data.model.RegisterResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpResponse
@@ -23,6 +25,7 @@ import com.nohjason.minari.screens.profile.profile_data.ProfileResponse
 import com.nohjason.minari.screens.quiz.data.QuestionResponse
 import com.nohjason.myapplication.network.response.Term
 import com.nohjason.myapplication.network.response.TermResponse
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,6 +36,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    @POST("/member/refresh")
+    suspend fun refreshToken(
+        @Body body: RefreshTokenRequest
+    ): Response<RefreshTokenResponse>
+
+    @POST("/member/refresh")
+    fun refreshTokenSync(
+        @Body body: RefreshTokenRequest
+    ): Call<RefreshTokenResponse>
+
     @GET("/terms/all")
     suspend fun getTerms(
         @Header("Authorization") token: String
@@ -111,7 +124,7 @@ interface ApiService {
     @GET("/news")
     suspend fun getAllNews(
         @Header("Authorization") token: String,
-        @Query("category") category: String,
+        @Query("category") category: String
     ): Response<GetAllNews>
 
     // 단어 용어 가져오기

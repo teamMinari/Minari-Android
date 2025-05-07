@@ -15,16 +15,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.nohjason.minari.R
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
+import com.nohjason.minari.navigation.Screens
+import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.profile.profile_data.ProfileResponse
 import com.nohjason.minari.screens.profile.profile_data.ProfileViewModel
 import com.nohjason.minari.screens.profile.profile_element.ProfileButton
@@ -39,11 +41,11 @@ fun ProfileMAinScreen(
     profileData: ProfileResponse?,
     navHostController: NavHostController
 ) {
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
     val data by profileViewModel.profileData.collectAsState()
     LaunchedEffect(Unit) {
-        profileViewModel.getProfile(token)
+        profileViewModel.getProfile()
     }
 
     if (data == null) {
@@ -59,7 +61,12 @@ fun ProfileMAinScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                preferencesManager.clearAll() // 로그아웃 처리
+                navHostController.navigate(Screens.FirstScreen.rout) {
+                    popUpTo(0) // 모든 백스택 제거 (앱에 맞게 조정)
+                }
+            }) {
                 Icon(
                     modifier = Modifier
                         .padding(start = 325.dp, top = 35.dp),

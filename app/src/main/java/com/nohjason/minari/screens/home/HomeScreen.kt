@@ -3,6 +3,7 @@ package com.nohjason.minari.screens.home
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -23,6 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,28 +40,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-//import coil.compose.AsyncImage
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
+import com.nohjason.minari.preferences.PreferencesManager
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.home.data.HomeDummyData.list
 import com.nohjason.minari.screens.home.data.HomeDummyData.wordCardDataList
 import com.nohjason.minari.screens.home.ui.VerticalNewsList
 import com.nohjason.minari.screens.home.ui.WordCardPager
-import com.nohjason.minari.screens.news.NewsViewModel
-import com.nohjason.minari.screens.rout.GrapeViewModel
-import com.nohjason.minari.screens.term.button.TermButtonViewModel
 import com.nohjason.minari.screens.ui.button.MinariButton
 import com.nohjason.minari.screens.ui.button.NewsButton
 import com.nohjason.minari.screens.ui.text.MinariInputField
 import com.nohjason.minari.ui.theme.MinariGray500
-import com.nohjason.minari.ui.theme.MinariGray600
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.b2_bold
 
@@ -64,17 +62,34 @@ import com.nohjason.minari.ui.theme.b2_bold
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: GrapeViewModel = viewModel(),
-    newsViewModel: NewsViewModel = hiltViewModel(),
-    termButtonViewModel: TermButtonViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     var text by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val context = LocalContext.current
     var backPressedTime by rememberSaveable { mutableStateOf(0L) }
-//    val data by profileViewModel.profileData.collectAsState()
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
+    val refreshResult by loginViewModel.refreshResult.collectAsState()
+
+    LaunchedEffect(Unit) {
+        if (preferencesManager.isAutoLogin()) {
+            val refreshToken = preferencesManager.getRefreshToken()
+            if (!refreshToken.isNullOrEmpty()) {
+                loginViewModel.refreshToken(refreshToken)
+            } else {
+                // 리프레시 토큰 없으면 로그인 화면으로
+                navController.navigate(Screens.FirstScreen.rout) {
+                    popUpTo(0)
+                }
+            }
+        } else {
+            // 자동로그인 설정 안됨 → 로그인 화면으로
+            navController.navigate(Screens.FirstScreen.rout) {
+                popUpTo(0)
+            }
+        }
+    }
 
     BackHandler(onBack = {
         val currentTime = System.currentTimeMillis()
@@ -102,20 +117,30 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        //중앙정렬 시키기
                         Spacer(modifier = Modifier.height(22.dp))
-                        MinariInputField(
-                            icon = painterResource(id = R.drawable.ic_search),
-                            label = "검색",
-                            onValueChange = { text = it },
-                            onClickAction = {
-                                 viewModel.getTerm(token, text)
-                                 navController.navigate(Screens.Term.rout + "/${text}")
-                            },
-                            isPassword = false
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.grape), // 로고 아이콘 추가
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            MinariInputField(
+                                icon = painterResource(id = R.drawable.ic_search),
+                                label = "검색",
+                                onValueChange = { text = it },
+                                onClickAction = { /* 검색 동작 */ },
+                                isPassword = false,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -127,7 +152,7 @@ fun HomeScreen(
             Triple(R.drawable.img_certificate, "증권", "stock"),
             Triple(R.drawable.img_property, "산업/재계", "industry"),
             Triple(R.drawable.img_real_estate, "부동산", "property"),
-            Triple(R.drawable.img_global_economy, "글로벌 경제", "global")
+            Triple(R.drawable.img_global_economy, "글로벌\n경제", "global")
         )
 
         LazyColumn(
@@ -186,7 +211,9 @@ fun HomeScreen(
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
                 )
                 VerticalNewsList(newsList = list)
-                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
                 MinariButton(
                     text = "많이 본 뉴스 더보기",
                     size = "large",
@@ -197,7 +224,7 @@ fun HomeScreen(
                     enabled = true,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
                 ) { }
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(83.dp))
             }
         }
     }
@@ -207,6 +234,6 @@ fun HomeScreen(
 //@Preview
 //@Composable
 //fun PreHome() {
-//    HomeScreen()
+//    HomeScreen(navController = rememberNavController(),)
 //
 //}

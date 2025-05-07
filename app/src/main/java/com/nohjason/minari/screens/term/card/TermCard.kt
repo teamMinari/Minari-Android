@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nohjason.minari.R
-import com.nohjason.minari.screens.auth.data.local.PreferencesManager
+import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.ui.text.MinariText
 
 @Composable
@@ -44,7 +44,7 @@ fun TermCard(
     val context = LocalContext.current
 
     val preferencesManager = remember { PreferencesManager(context) }
-    val accessToken = preferencesManager.getData("accessToken", "")
+//    val accessToken = preferencesManager.getData("accessToken", "")
 
     Box(
         Modifier.clickable { navController.navigate("test/${title}") }

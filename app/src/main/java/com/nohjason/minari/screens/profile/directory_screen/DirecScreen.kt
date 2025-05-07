@@ -14,20 +14,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecViewModel
 import com.nohjason.minari.screens.ui.titlebar.TitleBar
 
 @Composable
 fun DirecScreen(
-    direcViewModel: DirecViewModel,
-    token: String,
+    direcViewModel: DirecViewModel = hiltViewModel(),
+//    token: String,
 ){
 
     LaunchedEffect(Unit) {
-        direcViewModel.getDirecGp(token)
-        direcViewModel.getDirecGps(token)
-        direcViewModel.getDirecGpse(token)
-        direcViewModel.getDirecTerm(token)
+        direcViewModel.getDirecGp()
+        direcViewModel.getDirecGps()
+        direcViewModel.getDirecGpse()
+        direcViewModel.getDirecTerm()
     }
     val term = direcViewModel.direcTermData.collectAsState().value
     val gpse = direcViewModel.direcGpseData.collectAsState().value

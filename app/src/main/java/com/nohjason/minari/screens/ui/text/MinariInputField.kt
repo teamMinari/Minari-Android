@@ -26,6 +26,7 @@ import com.nohjason.minari.ui.theme.b2_medium
 
 @Composable
 fun MinariInputField(
+    modifier: Modifier = Modifier,
     icon: Painter?,
     label: String,
     onValueChange: (String) -> Unit = { },
@@ -45,10 +46,9 @@ fun MinariInputField(
         },
         textStyle = if (text.isEmpty()) b2_medium.copy(color = MinariGray300)
         else b2_bold.copy(color = MinariGray800),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp)
-            .background(Color(0xFFF8F8F8), RoundedCornerShape(12.dp)),
+            .background(Color(0xFFF8F8F8), RoundedCornerShape(12.dp)), // modifier에 padding 제거
         shape = RoundedCornerShape(12.dp),
         trailingIcon = {
             if (icon != null) {

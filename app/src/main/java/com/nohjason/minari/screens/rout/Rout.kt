@@ -42,8 +42,6 @@ import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.network.response.rout.GpsData
-import com.nohjason.minari.preferences.getFromPreferences
-import com.nohjason.minari.preferences.getPreferences
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.pretendard_extra_bold
@@ -55,11 +53,11 @@ fun Rout(
     navController: NavController,
     viewModel: GrapeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
-    val preferences = getPreferences()
-    val token = getFromPreferences(preferences, "token")
+//    val preferences = getPreferences()
+//    val token = getFromPreferences(preferences, "token")
     val route by viewModel.route.collectAsState()
     LaunchedEffect(key1 = Unit) {
-        viewModel.getAllGps(token = token)
+        viewModel.getAllGps()
     }
     BackHandler(onBack = {
         navController.popBackStack(BottomScreen.Home.rout, inclusive = false)
@@ -118,7 +116,7 @@ fun Rout(
             items(route!!.data) { item ->
                 Gps(
                     onClick = { navController.navigate(Screens.Grapes.rout + "/${item.gpsId}") },
-                    iconClick = { viewModel.likes(token, "GRAPES", item.gpsId) },
+                    iconClick = { viewModel.likes("GRAPES", item.gpsId) },
                     like = item.gpsLike,
                     name = item.gpsName,
                     time = item.gpsTime,
