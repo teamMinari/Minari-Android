@@ -2,6 +2,15 @@ package com.nohjason.minari.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.nohjason.minari.network.ApiService
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import javax.inject.Singleton
 
 class PreferencesManager(context: Context) {
     private val sharedPreferences: SharedPreferences =
@@ -41,3 +50,5 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit().clear().apply()
     }
 }
+
+

@@ -2,7 +2,6 @@ package com.nohjason.minari.network
 
 import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.auth.data.model.RefreshTokenRequest
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response

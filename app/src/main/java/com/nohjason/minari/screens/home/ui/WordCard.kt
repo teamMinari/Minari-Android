@@ -107,62 +107,6 @@ fun WordCardPager(
         }
     }
 }
-//@OptIn(ExperimentalPagerApi::class)
-//@Composable
-//fun WordCardPager(
-//    wordCardDataList: List<Triple<String, String, Int>>,
-//    navController: NavHostController, // 추가된 파라미터
-//    modifier: Modifier = Modifier
-//) {
-//    val pagerState = rememberPagerState()
-//
-//    Column (
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 20.dp)
-//            .clip(RoundedCornerShape(16.dp))
-//            .background(color = MinariWhite)
-//            .padding(20.dp)
-//            .clickable {
-//                navController.navigate("wordDetail/${wordCardData.third}") // third는 ID 값으로 가정
-//            }
-//    ){
-//        HorizontalPager(
-//            count = wordCardDataList.size,
-//            state = pagerState,
-//            modifier = Modifier.fillMaxWidth()
-//        ) { page ->
-//            val wordCardData = wordCardDataList[page]
-//            WordCard(
-//                title = wordCardData.first,
-//                description = wordCardData.second,
-//            )
-//        }
-//
-//        Spacer(Modifier.height(20.dp))
-//
-//        // 페이지 인디케이터
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(vertical = 8.dp),
-//            horizontalArrangement = Arrangement.Center
-//        ) {
-//            repeat(wordCardDataList.size) { index ->
-//                Box(
-//                    modifier = Modifier
-//                        .padding(horizontal = 4.dp)
-//                        .size(8.dp)
-//                        .background(
-//                            color = if (index == pagerState.currentPage) MinariBlue500.copy(alpha = 0.65f) else MinariGray200,
-//                            shape = CircleShape
-//                        )
-//                )
-//            }
-//        }
-//    }
-//}
-
 
 
 
@@ -229,11 +173,3 @@ fun WordCard(title: String, description: String) {
         }
     }
 }
-
-
-
-data class WordCardData(
-    val title: String,
-    val description: String,
-    val starIconId: Int
-)

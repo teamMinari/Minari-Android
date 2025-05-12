@@ -41,11 +41,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.nohjason.minari.R
+import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.quiz.QuizeViewModel
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.MinariWhite
@@ -54,20 +56,19 @@ import com.nohjason.minari.ui.theme.pretendard_semibold
 
 @Composable
 fun Grape(
-    grapeViewModel: GrapeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    quizeViewModel: QuizeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    grapeViewModel: GrapeViewModel = viewModel(),
+    quizeViewModel: QuizeViewModel = viewModel(),
     navController: NavController,
     gpseId: Int,
-    title: String,
+    title: String
 ) {
-//    val preferences = getPreferences()
-//    val token = getFromPreferences(preferences, "token")
     val gpse by grapeViewModel.gpse.collectAsState()
     LaunchedEffect(key1 = Unit) {
         grapeViewModel.getGpse(
 //            token = token,
             gpseId = gpseId
         )
+//        grapeViewModel.get
     }
 
     Scaffold(

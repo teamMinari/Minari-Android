@@ -39,19 +39,29 @@ import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.screens.auth.viewmodel.RegisterViewModel
 import com.nohjason.minari.ui.theme.MinariGray200
 import com.nohjason.minari.ui.theme.MinariGray500
-
-
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.*
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LikeScreen(
-    navController: NavController,
+    navController: NavController? = null // Preview용 null 허용
 ) {
     var isButtonEnabled by remember { mutableStateOf(false) }
+    val likeTagList = remember { mutableStateListOf<String>() }
+    val tagOptions = listOf("10대", "20대", "30대", "40대", "50대", "60대", "70대", "80대")
 
-    val likeTagList = remember { mutableStateListOf<String>() } // 선택된 태그 리스트
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
-    val tagOptions = listOf("10대", "20대", "30대", "40대", "50대", "60대", "70대", "80대") // 태그 목록
+    fun heightRatio(ratio: Float) = screenHeight * ratio
+    fun widthRatio(ratio: Float) = screenWidth * ratio
 
     Column(
         modifier = Modifier
@@ -60,30 +70,31 @@ fun LikeScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = widthRatio(24f / 360f))
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "뒤로가기",
                 modifier = Modifier
-                    .padding(top = 17.dp)
-                    .clickable { } // 뒤로가기 동작 추가 필요
+                    .padding(top = heightRatio(17f / 640f))
+                    .clickable { /* 뒤로가기 동작 추가 */ }
             )
 
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(heightRatio(44f / 640f)))
 
             Text(
                 text = "어떤 주제에 관심이\n있으신가요?",
                 style = h4_bold
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(heightRatio(40f / 640f)))
 
-            // 태그 버튼 UI
-            FlowRow{
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(widthRatio(8f / 360f)),
+                verticalArrangement = Arrangement.spacedBy(heightRatio(8f / 640f))
+            ) {
                 tagOptions.forEach { tag ->
                     val isSelected = tag in likeTagList
-
                     MinariButton(
                         text = tag,
                         size = "Small",
@@ -93,7 +104,7 @@ fun LikeScreen(
                         enabled = true
                     ) {
                         if (isSelected) {
-                            likeTagList.remove(tag) // 이미 선택된 경우 해제
+                            likeTagList.remove(tag)
                         } else {
                             likeTagList.add(tag)
                         }
@@ -102,10 +113,8 @@ fun LikeScreen(
                 }
             }
 
-
             Spacer(modifier = Modifier.weight(1f))
 
-            // 다음 버튼
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -121,34 +130,18 @@ fun LikeScreen(
                     enabled = isButtonEnabled,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        navController.navigate(Screens.SelectJobScreen.rout)
+                        navController?.navigate(Screens.SelectJobScreen.rout)
                     }
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(heightRatio(8f / 640f)))
         }
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-//@Preview
+//@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 //@Composable
-//fun PreLikeScreen(){
-//    Column(
-//        modifier = Modifier
-//            .background(Color.White)
-//            .fillMaxSize()
-//    ){
-//        LikeScreen()
-//    }
+//fun LikeScreenPreview() {
+//    LikeScreen()
 //}

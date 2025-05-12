@@ -12,26 +12,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
-import com.nohjason.minari.navigation.bottombar.BottomScreen
-import com.nohjason.minari.preferences.PreferencesManager
-import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.ui.button.MinariButton
 import com.nohjason.minari.screens.ui.text.MinariText
 import com.nohjason.minari.ui.theme.MinariBlue
@@ -42,35 +44,35 @@ import com.nohjason.minari.ui.theme.MinariGray900
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.h4_medium
 import com.nohjason.minari.ui.theme.rixfont
-import kotlinx.coroutines.delay
+
+
 @Composable
 fun FirstScreen(
     navController: NavController,
     loginViewModel: LoginViewModel = viewModel()
 ) {
+    val density = LocalDensity.current
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
     var isFirstChatVisible by remember { mutableStateOf(false) }
     var isSecondChatVisible by remember { mutableStateOf(false) }
-    var contentOffset by remember { mutableStateOf(50.dp) }
+    var contentOffset by remember { mutableStateOf(screenHeight * 0.06f) }
 
     val context = LocalContext.current
 
-    // 애니메이션 적용된 캐릭터 Y 좌표
-    var characterOffset by remember { mutableStateOf(150.dp) }
+    var characterOffset by remember { mutableStateOf(screenHeight * 0.2f) }
     val animatedCharacterOffset by animateDpAsState(
         targetValue = characterOffset,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300), label = "characterOffset"
     )
 
-    // 니메이션 적용된 콘텐츠 Y 좌표
     val animatedContentOffset by animateDpAsState(
         targetValue = contentOffset,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300), label = "contentOffset"
     )
 
-    // 애니메이션 실행 여부 상태
     var isAnimationRunning by remember { mutableStateOf(true) }
 
-    // 애니메이션 실행 순서
     LaunchedEffect(Unit) {
         delay(500)
         isFirstChatVisible = true
@@ -80,34 +82,32 @@ fun FirstScreen(
         characterOffset = 0.dp
         contentOffset = 0.dp
         delay(500)
-        characterOffset = 50.dp
-        isAnimationRunning = false // 애니메이션 종료
+        characterOffset = screenHeight * 0.07f
+        isAnimationRunning = false
     }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 35.dp, vertical = 24.dp),
+            .padding(horizontal = screenHeight * 0.04f, vertical = screenHeight * 0.03f),
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(screenHeight * 0.02f))
 
         Column {
             AnimatedVisibility(visible = isSecondChatVisible) {
                 Column {
                     LogoChatText(text = "청포도는 처음이야?", logo = false)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(screenHeight * 0.01f))
                 }
             }
 
             AnimatedVisibility(visible = isFirstChatVisible) {
-                Column {
-                    LogoChatText(text = "에 온걸 환영해", logo = true)
-                }
+                LogoChatText(text = "에 온걸 환영해", logo = true)
             }
         }
 
-        Spacer(modifier = Modifier.height(130.dp))
+        Spacer(modifier = Modifier.height(screenHeight * 0.16f))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -115,14 +115,12 @@ fun FirstScreen(
                 .offset(y = animatedContentOffset)
                 .animateContentSize()
         ) {
-            Row (
-                verticalAlignment = Alignment.CenterVertically
-            ){
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(R.drawable.grape),
                     contentDescription = null,
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(38.dp)
+                    modifier = Modifier.size(screenHeight * 0.05f)
                 )
                 MinariText(
                     text = "청포도",
@@ -132,7 +130,7 @@ fun FirstScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(200.dp))
+            Spacer(modifier = Modifier.height(screenHeight * 0.25f))
 
             MinariButton(
                 text = "네, 사용해 본 적이 있어요.",
@@ -140,17 +138,13 @@ fun FirstScreen(
                 textColor = MinariWhite,
                 buttonColor = MinariBlue500,
                 line = false,
-                enabled = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                // 애니메이션 중에는 클릭 막기
+                enabled = !isAnimationRunning,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                if (!isAnimationRunning) {
-                    navController.navigate(Screens.Login.rout)
-                }
+                navController.navigate(Screens.Login.rout)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(screenHeight * 0.01f))
 
             MinariButton(
                 text = "아니요, 이번이 처음이에요.",
@@ -158,22 +152,16 @@ fun FirstScreen(
                 textColor = MinariGray500,
                 buttonColor = MinariWhite,
                 line = true,
-                enabled = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                // 애니메이션 중에는 클릭 막기
+                enabled = !isAnimationRunning,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                if (!isAnimationRunning) {
-                    navController.navigate(Screens.IdScreen.rout)
-                }
+                navController.navigate(Screens.IdScreen.rout)
             }
         }
     }
 
-    // 캐릭터 이미지 (애니메이션 적용됨)
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -183,15 +171,10 @@ fun FirstScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(360f / 164f)
-                .offset(y = animatedCharacterOffset) // 애니메이션 적용된 값 사용
+                .offset(y = animatedCharacterOffset)
         )
     }
 }
-
-
-
-
-
 
 @Composable
 private fun LogoChatText(
@@ -207,52 +190,37 @@ private fun LogoChatText(
                 .border(
                     width = 1.dp,
                     color = MinariGray200,
-                    shape = RoundedCornerShape(
-                        topStart = 20.dp,
-                        topEnd = 20.dp,
-                        bottomStart = 20.dp,
-                        bottomEnd = 0.dp
-                    )
+                    shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 0.dp)
                 )
                 .background(
                     color = Color.White,
-                    shape = RoundedCornerShape(
-                        topStart = 20.dp,
-                        topEnd = 20.dp,
-                        bottomStart = 20.dp,
-                        bottomEnd = 0.dp
-                    )
+                    shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 0.dp)
                 )
                 .padding(horizontal = 20.dp, vertical = 10.dp)
         ) {
             Row {
                 if (logo) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 3.dp)
-                    ){
-                        MinariText(
-                            text = "청포도",
-                            color = MinariBlue,
-                            fontFamily = rixfont,
-                            size = 18
-                        )
-                    }
+                    MinariText(
+                        text = "청포도",
+                        color = MinariBlue,
+                        fontFamily = rixfont,
+                        size = 18,
+                        modifier = Modifier.padding(end = 3.dp)
+                    )
                 }
                 Text(
                     text = text,
                     style = h4_medium,
                     color = MinariGray900,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
         }
     }
 }
 
-
 //@Preview(showBackground = true)
 //@Composable
-//fun PreFirstScreen() {
-//    FirstScreen()
+//fun PreviewFirstScreen() {
+//    FirstScreen(navController = rememberNavController())
 //}

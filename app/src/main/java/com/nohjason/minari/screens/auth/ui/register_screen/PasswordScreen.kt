@@ -24,8 +24,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
@@ -37,23 +35,33 @@ import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.h4_bold
 import com.nohjason.minari.ui.theme.b2_medium
-
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.*
 
 @Composable
 fun PasswordScreen(
-    navController: NavController,
-    registerViewModel: RegisterViewModel = hiltViewModel()
+    navController: NavController? = null, // Preview용 null 허용
+    registerViewModel: RegisterViewModel? = null
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }
-
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-
-    val focusManager = LocalFocusManager.current
-    val isKeyboardVisible by keyboardAsState()
     var showPasswordMismatch by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
+    fun heightRatio(ratio: Float) = screenHeight * ratio
+    fun widthRatio(ratio: Float) = screenWidth * ratio
 
     Column(
         modifier = Modifier
@@ -62,26 +70,25 @@ fun PasswordScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = widthRatio(24f / 360f))
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "뒤로가기",
                 modifier = Modifier
-                    .padding(top = 17.dp)
-                    .clickable { focusManager.clearFocus() } // 포커스 해제
+                    .padding(top = heightRatio(17f / 640f))
+                    .clickable { focusManager.clearFocus() }
             )
 
-            Spacer(modifier = Modifier.height(44.dp))
+            Spacer(modifier = Modifier.height(heightRatio(44f / 640f)))
 
             Text(
                 text = "로그인 시 사용될 비밀번호를 \n입력해 주세요!",
                 style = h4_bold
             )
 
-            Spacer(modifier = Modifier.height(76.dp))
+            Spacer(modifier = Modifier.height(heightRatio(76f / 640f)))
 
-            //비번 입력
             MinariInputField(
                 icon = painterResource(
                     id = if (passwordVisible)
@@ -98,9 +105,8 @@ fun PasswordScreen(
                 isPassword = !passwordVisible
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(heightRatio(16f / 640f)))
 
-            //비번 확인 필드
             MinariInputField(
                 icon = painterResource(
                     id = if (confirmPasswordVisible)
@@ -112,7 +118,7 @@ fun PasswordScreen(
                     isButtonEnabled = password.isNotEmpty() && confirmPassword.isNotEmpty()
                 },
                 onClickAction = {
-                    confirmPasswordVisible = !confirmPasswordVisible 
+                    confirmPasswordVisible = !confirmPasswordVisible
                 },
                 isPassword = !confirmPasswordVisible
             )
@@ -131,7 +137,7 @@ fun PasswordScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = widthRatio(24f / 360f))
                 .imePadding(),
             contentAlignment = Alignment.Center
         ) {
@@ -149,35 +155,20 @@ fun PasswordScreen(
                         return@MinariButton
                     }
                     showPasswordMismatch = false
-                    registerViewModel.updatePassword(newPassword = password)
-                    registerViewModel.updateConfirmPassword(newConfirmPassword = password)
-                    navController.navigate(Screens.EmailScreen.rout)
-
+                    registerViewModel?.updatePassword(newPassword = password)
+                    registerViewModel?.updateConfirmPassword(newConfirmPassword = password)
+                    navController?.navigate(Screens.EmailScreen.rout)
                     focusManager.clearFocus()
                 }
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(heightRatio(8f / 640f)))
     }
 }
 
-
-
-
-
-
-
-
-
-//@Preview(showBackground = true)
+//@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 //@Composable
-//fun PrePasswordScreen(){
-//    Column(
-//        modifier = Modifier
-//            .background(Color.White)
-//            .fillMaxSize()
-//    ){
-//        PasswordScreen()
-//    }
+//fun PasswordScreenPreview() {
+//    PasswordScreen()
 //}

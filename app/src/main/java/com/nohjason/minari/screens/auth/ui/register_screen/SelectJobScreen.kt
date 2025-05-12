@@ -33,10 +33,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
@@ -44,19 +40,21 @@ import com.nohjason.minari.screens.auth.viewmodel.RegisterViewModel
 import com.nohjason.minari.ui.theme.MinariGray200
 import com.nohjason.minari.ui.theme.MinariGray800
 import com.nohjason.minari.ui.theme.b2_bold
-import com.nohjason.minari.ui.theme.b2_medium
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.unit.*
 
-
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SelectJobScreen(
-    navController: NavController,
-    registerViewModel: RegisterViewModel = hiltViewModel()
+    navController: NavController? = null,
+    registerViewModel: RegisterViewModel? = null
 ) {
-    val registerResponse by registerViewModel.registerResponse.collectAsState()
+    val registerResponse by registerViewModel?.registerResponse?.collectAsState() ?: remember { mutableStateOf(null) }
     LaunchedEffect(registerResponse) {
-        if (registerResponse != null ) {
-            navController.navigate(Screens.Login.rout)
+        if (registerResponse != null) {
+            navController?.navigate(Screens.Login.rout)
         }
     }
 
@@ -69,10 +67,16 @@ fun SelectJobScreen(
 
     val selectedJob = remember { mutableStateOf<String?>(null) }
 
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+    fun widthRatio(ratio: Float) = screenWidth * ratio
+    fun heightRatio(ratio: Float) = screenHeight * ratio
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = widthRatio(24f / 360f))
             .imePadding(),
         horizontalAlignment = Alignment.Start
     ) {
@@ -80,18 +84,18 @@ fun SelectJobScreen(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "뒤로가기",
             modifier = Modifier
-                .padding(top = 17.dp)
+                .padding(top = heightRatio(17f / 640f))
                 .clickable { /* 뒤로가기 이벤트 */ }
         )
 
-        Spacer(modifier = Modifier.height(44.dp))
+        Spacer(modifier = Modifier.height(heightRatio(44f / 640f)))
 
         Text(
             text = "원하는 직업을\n선택해 주세요.",
             style = h4_bold
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(heightRatio(32f / 640f)))
 
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -107,7 +111,7 @@ fun SelectJobScreen(
                     imgRes = jobOptions[0].second,
                     isSelected = selectedJob.value == jobOptions[0].first
                 ) {
-                    registerViewModel.register()
+                    registerViewModel?.register()
                     selectedJob.value = if (selectedJob.value == jobOptions[0].first) null else jobOptions[0].first
                 }
                 JobButton(
@@ -115,7 +119,7 @@ fun SelectJobScreen(
                     imgRes = jobOptions[1].second,
                     isSelected = selectedJob.value == jobOptions[1].first
                 ) {
-                    registerViewModel.register()
+                    registerViewModel?.register()
                     selectedJob.value = if (selectedJob.value == jobOptions[1].first) null else jobOptions[1].first
                 }
             }
@@ -128,7 +132,7 @@ fun SelectJobScreen(
                     imgRes = jobOptions[2].second,
                     isSelected = selectedJob.value == jobOptions[2].first
                 ) {
-                    registerViewModel.register()
+                    registerViewModel?.register()
                     selectedJob.value = if (selectedJob.value == jobOptions[2].first) null else jobOptions[2].first
                 }
                 JobButton(
@@ -136,7 +140,7 @@ fun SelectJobScreen(
                     imgRes = jobOptions[3].second,
                     isSelected = selectedJob.value == jobOptions[3].first
                 ) {
-                    registerViewModel.register()
+                    registerViewModel?.register()
                     selectedJob.value = if (selectedJob.value == jobOptions[3].first) null else jobOptions[3].first
                 }
             }
@@ -151,6 +155,12 @@ fun JobButton(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+    fun widthRatio(ratio: Float) = screenWidth * ratio
+    fun heightRatio(ratio: Float) = screenHeight * ratio
+
     val textColor = if (isSelected) MinariGray800 else MinariGray800.copy(alpha = 0.6f)
     val borderColor = if (isSelected) MinariGray200 else MinariGray200.copy(alpha = 0.6f)
     val imageAlpha = if (isSelected) 1f else 0.6f
@@ -159,16 +169,16 @@ fun JobButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = MinariWhite,
-            contentColor = textColor,
+            contentColor = textColor
         ),
         border = BorderStroke(
             width = 1.dp,
             color = borderColor
         ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(widthRatio(16f / 360f)),
         modifier = Modifier
-            .width(152.dp)
-            .height(216.dp)
+            .width(widthRatio(152f / 360f))
+            .height(heightRatio(216f / 640f))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,10 +189,10 @@ fun JobButton(
                 painter = painterResource(id = imgRes),
                 contentDescription = "직업 이미지",
                 modifier = Modifier
-                    .size(80.dp)
-                    .alpha(imageAlpha)
+                    .size(widthRatio(80f / 360f))
+                    .graphicsLayer { alpha = imageAlpha }
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(heightRatio(8f / 640f)))
             Text(
                 text = text,
                 style = b2_bold
@@ -191,9 +201,8 @@ fun JobButton(
     }
 }
 
-
-//@Preview(showBackground = true)
+//@Preview(showBackground = true, widthDp = 360, heightDp = 640)
 //@Composable
-//fun PreSelectJobScreen(){
+//fun SelectJobScreenPreview() {
 //    SelectJobScreen()
 //}

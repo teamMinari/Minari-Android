@@ -30,7 +30,6 @@ import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.profile.profile_data.ProfileResponse
 import com.nohjason.minari.screens.profile.profile_data.ProfileViewModel
 import com.nohjason.minari.screens.profile.profile_element.ProfileButton
-import com.nohjason.minari.screens.profile.profile_element.ProfileInfor
 import com.nohjason.minari.screens.profile.profile_element.RewardBar
 import com.nohjason.minari.screens.profile.likes.Dummy.likeDummy
 import com.nohjason.minari.screens.profile.likes.LikeList
@@ -75,13 +74,13 @@ fun ProfileMAinScreen(
                     tint = Color.Unspecified
                 )
             }
-            ProfileInfor(
-                id = profileData!!.id,
-                email = profileData.email,
-                totalExp = profileData.totalExp,
-                level = profileData.level,
-                title = profileData.title
-            )
+//            ProfileInfor(
+//                id = profileData!!.id,
+//                email = profileData.email,
+//                totalExp = profileData.totalExp,
+//                level = profileData.level,
+//                title = profileData.title
+//            )
             Row(
                 modifier = Modifier.padding(top = 22.dp)
             ) {
@@ -102,11 +101,11 @@ fun ProfileMAinScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             val percentage = (50 / 100f)//exp구현 시 변경해야함
-            RewardBar(
-                progress = percentage,
-                xp = profileData.exp,
-                level = profileData.level
-            )
+//            RewardBar(
+//                progress = percentage,
+//                xp = profileData.exp,
+//                level = profileData.level
+//            )
             LikeList(likeList = likeDummy, navHostController = navHostController)
             Spacer(modifier = Modifier.height(25.dp))
         }

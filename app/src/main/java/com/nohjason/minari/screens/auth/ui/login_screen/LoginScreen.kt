@@ -1,6 +1,7 @@
 package com.nohjason.minari.screens.auth.ui.login_screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,12 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
@@ -55,6 +59,7 @@ import com.nohjason.minari.ui.theme.button_bold
 import com.nohjason.minari.ui.theme.button_medium
 import com.nohjason.minari.ui.theme.rixfont
 
+
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -71,7 +76,15 @@ fun LoginScreen(
 
     val isButtonEnabled = id.isNotEmpty() && password.isNotEmpty()
 
-    // 로그인 성공 시 토큰, 자동로그인 플래그 저장
+    // 화면 크기 가져오기
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
+    // 비율 기반 사이즈 계산 함수
+    fun heightRatio(ratio: Float) = screenHeight * ratio
+    fun widthRatio(ratio: Float) = screenWidth * ratio
+
     LaunchedEffect(loginResponse) {
         if (loginResponse != null) {
             preferencesManager.saveToken(loginResponse!!.data.accessToken)
@@ -79,28 +92,22 @@ fun LoginScreen(
                 preferencesManager.saveRefreshToken(loginResponse!!.data.refreshToken)
                 preferencesManager.setAutoLogin(true)
             } else {
-                // 저장 안 할 때는 refreshToken/autoLogin clear
                 preferencesManager.saveRefreshToken("")
                 preferencesManager.setAutoLogin(false)
             }
-            navController.navigate(BottomScreen.Home.rout) {
-                popUpTo(0)
-            }
-            Log.d("TAG", "SelfLoginScreen: ${loginResponse!!.data.accessToken}")
+            navController.navigate(BottomScreen.Home.rout) { popUpTo(0) }
         }
     }
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(color = MinariWhite)
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = widthRatio(0.06f)) // 약 24dp 기준
     ) {
-        Spacer(modifier = Modifier.height(148.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.18f))) // 약 148dp 기준
 
-        // 타이틀
         MinariText(
             text = "청포도",
             color = MinariBlue,
@@ -108,18 +115,16 @@ fun LoginScreen(
             size = 32
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.04f))) // 약 32dp 기준
 
-        // 아이디 입력
         MinariInputField(
             icon = null,
             label = "아이디 입력",
             onValueChange = { id = it }
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.015f))) // 약 12dp 기준
 
-        // 비밀번호 입력
         MinariInputField(
             icon = painterResource(
                 id = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
@@ -130,9 +135,8 @@ fun LoginScreen(
             isPassword = !passwordVisible
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.015f)))
 
-        // 로그인 저장 체크박스
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -144,10 +148,10 @@ fun LoginScreen(
                 contentDescription = "로그인 저장 체크",
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(widthRatio(0.055f)) // 약 20dp
                     .clickable { saveLogin = !saveLogin }
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(widthRatio(0.01f)))
             Text(
                 text = "로그인 저장",
                 style = button_medium,
@@ -156,9 +160,8 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.1f))) // 약 80dp
 
-        // 로그인 버튼
         MinariButton(
             text = "로그인",
             size = "Large",
@@ -171,44 +174,23 @@ fun LoginScreen(
             loginViewModel.login(id = id, password = password)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.015f)))
 
-        // 구글 로그인 버튼
-        OutlinedButton(
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                backgroundColor = MinariWhite,
-                contentColor = MinariGray500
-            ),
-            border = BorderStroke(1.dp, MinariGray200),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            onClick = {
-                //구글 로그인 버튼
-            }
+        MinariButton(
+            text = "구글로 계속하기",
+            size = "Large",
+            textColor = MinariGray500,
+            buttonColor = MinariWhite,
+            line = true,
+            enabled = isButtonEnabled,
+            modifier = Modifier.fillMaxWidth(),
+            icon = painterResource(R.drawable.ic_google)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_google),
-                    tint = Color.Unspecified,
-                    contentDescription = "Google Icon",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "구글로 계속하기",
-                    style = b2_bold,
-                    color = MinariGray500
-                )
-            }
+            Toast.makeText(context, "아직 구현중인 기능입니다.", Toast.LENGTH_SHORT).show()
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(heightRatio(0.025f)))
 
-        // 회원가입 안내
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
@@ -218,7 +200,7 @@ fun LoginScreen(
                 style = button_medium,
                 color = MinariGray500
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(widthRatio(0.01f)))
             Text(
                 text = "회원가입",
                 style = button_bold,
@@ -231,17 +213,10 @@ fun LoginScreen(
     }
 }
 
-
-
-
-//@Preview(showBackground = true)
+//@Preview(showBackground = true, widthDp = 360, heightDp = 720)
 //@Composable
-//fun PreLoginScreen(){
-//    Column (
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(color = MinariWhite)
-//    ){
-//        LoginScreen()
-//    }
+//fun LoginScreenPreview() {
+//    val context = LocalContext.current
+//    val navController = NavController(context)
+//    LoginScreen(navController = navController)
 //}

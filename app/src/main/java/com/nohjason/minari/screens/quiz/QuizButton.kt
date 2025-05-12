@@ -104,17 +104,17 @@ fun QuizButton(
 
 }
 
-@Preview()
-@Composable
-fun PreButton() {
-    QuizButton(
-        icResId = ImageVector.vectorResource(id = R.drawable.ic_easy),
-        imgResId = R.drawable.img_easy,
-        color1 = Color(0xFF6889FF),
-        color2 = Color(0xFFFF64F5),
-        lavel = "Lavel 1",
-        coment = "제일 쉬운 난이도",
-        onClick = {}
-    )
-}
+//@Preview()
+//@Composable
+//fun PreButton() {
+//    QuizButton(
+//        icResId = ImageVector.vectorResource(id = R.drawable.ic_easy),
+//        imgResId = R.drawable.img_easy,
+//        color1 = Color(0xFF6889FF),
+//        color2 = Color(0xFFFF64F5),
+//        lavel = "Lavel 1",
+//        coment = "제일 쉬운 난이도",
+//        onClick = {}
+//    )
+//}
 

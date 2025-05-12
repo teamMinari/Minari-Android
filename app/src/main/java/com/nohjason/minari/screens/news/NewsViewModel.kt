@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.rout.response.GetAllNews
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,39 +20,97 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    application: Application
+    application: Application,
+    private val preferencesManager: PreferencesManager,
+    private val apiService: ApiService
 ) : AndroidViewModel(application) {
 
-    private val preferencesManager = PreferencesManager(application)
+    private val _hotNews = MutableStateFlow<GetAllNews?>(null)
+    val hotNews: StateFlow<GetAllNews?> = _hotNews
 
-    private val _getAllNews = MutableStateFlow<GetAllNews?>(null)
-    val getAllNews: StateFlow<GetAllNews?> = _getAllNews
+    private val _categoryNews = MutableStateFlow<GetAllNews?>(null)
+    val categoryNews: StateFlow<GetAllNews?> = _categoryNews
 
-    fun getAllNews(category: String) {
+    fun getHotNews() {
         viewModelScope.launch {
             val token = preferencesManager.getToken()
-            if (token.isNullOrEmpty()) {
-                Log.e("TAG", "getAllNews: 토큰 없음")
-                return@launch
-            }
+            if (token.isNullOrEmpty()) return@launch
             try {
                 val response = withContext(Dispatchers.IO) {
-                    Log.d("TAG", "getAllNews: $token")
-                    api.getAllNews(token, category)
+                    apiService.getAllNews(token, "HotNews")
                 }
                 if (response.isSuccessful) {
-                    _getAllNews.value = response.body()
-                    Log.d("TAG", "getAllNews: 모든 뉴스 서버 통신 성공")
-                } else {
-                    Log.e("TAG", "getAllNews: 서버 응답 에러 - 코드: ${response.code()}")
+                    _hotNews.value = response.body()
                 }
-            } catch (e: IOException) {
-                Log.e("TAG", "getAllNews: 네트워크 오류", e)
-            } catch (e: HttpException) {
-                Log.e("TAG", "getAllNews: HTTP 오류 - 코드: ${e.code()}", e)
             } catch (e: Exception) {
-                Log.e("TAG", "getAllNews: 알 수 없는 오류", e)
+                Log.e("NewsViewModel", "getHotNews error", e)
+            }
+        }
+    }
+
+    fun getCategoryNews(category: String) {
+        viewModelScope.launch {
+            val token = preferencesManager.getToken()
+            if (token.isNullOrEmpty()) return@launch
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    apiService.getAllNews(token, category)
+                }
+                if (response.isSuccessful) {
+                    _categoryNews.value = response.body()
+                }
+            } catch (e: Exception) {
+                Log.e("NewsViewModel", "getCategoryNews error", e)
             }
         }
     }
 }
+
+//@HiltViewModel
+//class NewsViewModel @Inject constructor(
+//    application: Application
+//) : AndroidViewModel(application) {
+//    private val preferencesManager = PreferencesManager(application)
+//
+//    private val _hotNews = MutableStateFlow<GetAllNews?>(null)
+//    val hotNews: StateFlow<GetAllNews?> = _hotNews
+//
+//    private val _categoryNews = MutableStateFlow<GetAllNews?>(null)
+//    val categoryNews: StateFlow<GetAllNews?> = _categoryNews
+//
+//    fun getHotNews() {
+//        viewModelScope.launch {
+//            // 토큰 체크 및 API 호출
+//            val token = preferencesManager.getToken()
+//            if (token.isNullOrEmpty()) return@launch
+//            try {
+//                val response = withContext(Dispatchers.IO) {
+//                    api.getAllNews(token, "HotNews")
+//                }
+//                if (response.isSuccessful) {
+//                    _hotNews.value = response.body()
+//                }
+//            } catch (e: Exception) {
+//                Log.e("NewsViewModel", "getHotNews error", e)
+//            }
+//        }
+//    }
+//
+//    fun getCategoryNews(category: String) {
+//        viewModelScope.launch {
+//            val token = preferencesManager.getToken()
+//            if (token.isNullOrEmpty()) return@launch
+//            try {
+//                val response = withContext(Dispatchers.IO) {
+//                    api.getAllNews(token, category)
+//                }
+//                if (response.isSuccessful) {
+//                    _categoryNews.value = response.body()
+//                }
+//            } catch (e: Exception) {
+//                Log.e("NewsViewModel", "getCategoryNews error", e)
+//            }
+//        }
+//    }
+//
+//}

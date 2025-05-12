@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.preferences.PreferencesManager
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    application: Application
+    application: Application,
+    private val preferencesManager: PreferencesManager,
+    private val apiService: ApiService
 ) : AndroidViewModel(application) {
-
-    private val preferencesManager = PreferencesManager(application)
 
     private val _profileData = MutableStateFlow<ProfileResponse?>(null)
     val profileData: StateFlow<ProfileResponse?> = _profileData
@@ -32,29 +32,68 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val token = preferencesManager.getToken()
             if (token.isNullOrEmpty()) {
-                Log.e("TAG", "getProfile: 토큰 없음")
+                Log.e("ProfileViewModel", "getProfile: 토큰 없음")
                 return@launch
             }
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getProfile(token)
+                    apiService.getProfile(token)
                 }
                 if (response.isSuccessful) {
                     _profileData.value = response.body()
-                    Log.d("TAG", "getProfile: 전체 포도송이 서버 통신 성공")
+                    Log.d("ProfileViewModel", "getProfile: 전체 포도송이 서버 통신 성공")
                 } else {
-                    Log.e("TAG", "getProfile: 서버 응답 에러 - 코드: ${response.code()}")
+                    Log.e("ProfileViewModel", "getProfile: 서버 응답 에러 - 코드: ${response.code()}")
                 }
             } catch (e: IOException) {
-                Log.e("TAG", "getProfile: 네트워크 오류", e)
+                Log.e("ProfileViewModel", "getProfile: 네트워크 오류", e)
             } catch (e: HttpException) {
-                Log.e("TAG", "getProfile: HTTP 오류 - 코드: ${e.code()}", e)
+                Log.e("ProfileViewModel", "getProfile: HTTP 오류 - 코드: ${e.code()}", e)
             } catch (e: Exception) {
-                Log.e("TAG", "getProfile: 알 수 없는 오류", e)
+                Log.e("ProfileViewModel", "getProfile: 알 수 없는 오류", e)
             }
         }
     }
 }
+
+
+//@HiltViewModel
+//class ProfileViewModel @Inject constructor(
+//    application: Application
+//) : AndroidViewModel(application) {
+//
+//    private val preferencesManager = PreferencesManager(application)
+//
+//    private val _profileData = MutableStateFlow<ProfileResponse?>(null)
+//    val profileData: StateFlow<ProfileResponse?> = _profileData
+//
+//    fun getProfile() {
+//        viewModelScope.launch {
+//            val token = preferencesManager.getToken()
+//            if (token.isNullOrEmpty()) {
+//                Log.e("TAG", "getProfile: 토큰 없음")
+//                return@launch
+//            }
+//            try {
+//                val response = withContext(Dispatchers.IO) {
+//                    api.getProfile(token)
+//                }
+//                if (response.isSuccessful) {
+//                    _profileData.value = response.body()
+//                    Log.d("TAG", "getProfile: 전체 포도송이 서버 통신 성공")
+//                } else {
+//                    Log.e("TAG", "getProfile: 서버 응답 에러 - 코드: ${response.code()}")
+//                }
+//            } catch (e: IOException) {
+//                Log.e("TAG", "getProfile: 네트워크 오류", e)
+//            } catch (e: HttpException) {
+//                Log.e("TAG", "getProfile: HTTP 오류 - 코드: ${e.code()}", e)
+//            } catch (e: Exception) {
+//                Log.e("TAG", "getProfile: 알 수 없는 오류", e)
+//            }
+//        }
+//    }
+//}
 
 
 

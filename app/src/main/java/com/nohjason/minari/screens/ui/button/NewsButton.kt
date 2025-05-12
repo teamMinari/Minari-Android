@@ -26,8 +26,10 @@ import com.nohjason.minari.ui.theme.MinariGray100
 import com.nohjason.minari.ui.theme.MinariGray700
 import com.nohjason.minari.ui.theme.MinariWhite
 import androidx.compose.material3.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
+import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariGray800
 import com.nohjason.minari.ui.theme.button_medium
 import com.nohjason.minari.ui.theme.caption_bold
@@ -36,23 +38,25 @@ import com.nohjason.minari.ui.theme.caption_medium
 @Composable
 fun NewsButton(
     icon: Painter?,
-    text: String
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(72.dp) // 너비 제한
+        modifier = Modifier.width(72.dp)
     ) {
         Button(
-            onClick = {},
+            onClick = onClick,
             shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, MinariGray100),
+            border = BorderStroke(1.dp, if (isSelected) MinariBlue500 else MinariGray100),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MinariWhite,
-                contentColor = MinariGray700
+                containerColor = if (isSelected) MinariBlue500 else MinariWhite,
+                contentColor = if (isSelected) Color.White else MinariGray700
             ),
             contentPadding = PaddingValues(0.dp),
-            modifier = Modifier.size(64.dp) // 목표 UI와 일치하도록 크기 조정
+            modifier = Modifier.size(64.dp)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -77,6 +81,7 @@ fun NewsButton(
         )
     }
 }
+
 
 
 

@@ -26,6 +26,7 @@ import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.home.HomeScreen
 import com.nohjason.minari.screens.term.TermScreen
 import com.nohjason.minari.screens.news.News
+import com.nohjason.minari.screens.news.NewsScreen
 import com.nohjason.minari.screens.profile.alias_screen.AliasScreen
 import com.nohjason.minari.screens.profile.directory_screen.DirecScreen
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecViewModel
@@ -89,7 +90,7 @@ fun NavGraph(
 
         // 뉴스
         composable(BottomScreen.News.rout) {
-            News(navController = navController)
+            NewsScreen(navController = navController)
         }
 
         // 홈
@@ -101,7 +102,7 @@ fun NavGraph(
 
         // 퀴즈
         composable(BottomScreen.Quiz.rout) {
-//            QuizMainScreen(navHostController = navController, quizViewModel = quizViewModel, token=token)
+//            QuizMainScreen(navHostController = navController)
         }
 
         // 프로필
@@ -207,7 +208,7 @@ fun NavGraph(
                 )
             }
         ) {
-//            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
+            QuizPlayScreen(navController)
         }
         composable(
             Screens.QuizEndScreen.rout,

@@ -7,96 +7,93 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.network.ApiService
+import com.nohjason.minari.preferences.PreferencesManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class QuizViewModel : ViewModel() {
+@HiltViewModel
+class QuizViewModel @Inject constructor(
+    private val preferencesManager: PreferencesManager,
+    private val api: ApiService
+) : ViewModel() {
 
-    suspend fun getQuestion(level: Int, token:String): QuestionResponse {
-        // Retrofit 인스턴스를 가져옴
-        val apiService = RetrofitInstance.api
-
-        return withContext(Dispatchers.IO) {
-            try {
-                // GET 요청을 보내고 응답을 받아옴
-                val response = apiService.getQuestion(
-                    token = token,
-                    level =  level// 요청할 레벨
-                )
-//                println("서버가 활성화됨"+response)
-                response // 서버 응답 반환
-            } catch (e: Exception) {
-                // 기타 예외 처리
-                println("Error: ${e.message}")
-                throw e // 필요에 따라 다시 던질 수 있음
-            }
-        }
-    }
-
-//    suspend fun postPoint(point: Int, token: String): QuestionResponse {
-//        // Retrofit 인스턴스를 가져옴
-//        val apiService = RetrofitInstance.api
-//
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                // GET 요청을 보내고 응답을 받아옴
-//                val response = apiService.getQuestion(
-//                    level =  level// 요청할 레벨
-//                )
-//                response // 서버 응답 반환
-//            } catch (e: Exception) {
-//                // 기타 예외 처리
-//                println("Error: ${e.message}")
-//                throw e // 필요에 따라 다시 던질 수 있음
-//            }
-//        }
-//    }
-
-
-    // PlayData를 관리하기 위한 상태
     private val _playData = MutableStateFlow<PlayData?>(null)
     val playData: StateFlow<PlayData?> = _playData
 
+    private val _uiState = MutableStateFlow(QuizUiState.Waiting)
+    val uiState: StateFlow<QuizUiState> = _uiState
 
-    // PlayData 초기화 함수
-    fun initializePlayData(data: PlayData) {
-        _playData.value = data
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
+    // 퀴즈 문제 불러오기
+    fun loadQuestions(level: Int) {
+        viewModelScope.launch {
+            _loading.value = true
+            val token = preferencesManager.getToken() ?: return@launch
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    api.getQuestion(token = token, level = level)
+                }
+                // 성공 시 PlayData로 변환
+                if (response.status == 200 && response.data.isNotEmpty()) {
+                    _playData.value = PlayData(
+                        userCurrent = 0,
+                        point = 0,
+                        qtNum = 0,
+                        qtList = response.data
+                    )
+                    _uiState.value = QuizUiState.Waiting
+                }
+            } catch (e: Exception) {
+                // 에러 처리(로딩 중지)
+            } finally {
+                _loading.value = false
+            }
+        }
     }
 
-    // 퀴즈를 다음으로 진행하는 함수
+    // 정답 제출
+    fun submitAnswer(userAnswer: Boolean) {
+        val data = _playData.value ?: return
+        val currentQuestion = data.qtList.getOrNull(data.qtNum) ?: return
+        val isCorrect = userAnswer == currentQuestion.qtAnswer
+
+        // 상태 업데이트
+        _uiState.value = if (isCorrect) QuizUiState.Correct else QuizUiState.Wrong
+
+        // 점수/정답수 업데이트
+        if (isCorrect) {
+            _playData.value = data.copy(
+                point = data.point + 1,
+                userCurrent = data.userCurrent + 1
+            )
+        }
+    }
+
+    fun showTip() {
+        _uiState.value = QuizUiState.Tip
+    }
+
+    // 다음 문제로 이동
     fun nextQuestion() {
-        _playData.value?.let { data ->
-            val newQtNum = data.qtNum + 1
-            if (newQtNum < data.qtList.size) {
-                _playData.value = data.copy(qtNum = newQtNum)
-            }
+        val data = _playData.value ?: return
+        val nextNum = data.qtNum + 1
+        if (nextNum < data.qtList.size) {
+            _playData.value = data.copy(qtNum = nextNum)
+            _uiState.value = QuizUiState.Waiting
         }
+        // 마지막 문제면 결과 화면 이동은 UI에서 처리
     }
 
-    // 점수 업데이트 함수
-    fun updatePoints(newPoints: Int) {
+    // 상태 초기화 (퀴즈 다시 시작 등)
+    fun reset() {
         _playData.value?.let { data ->
-            _playData.value = data.copy(point = newPoints)
+            _playData.value = data.copy(qtNum = 0, userCurrent = 0, point = 0)
+            _uiState.value = QuizUiState.Waiting
         }
     }
-
-    fun updateCurrent(newCurrent: Int) {
-        _playData.value?.let { data ->
-            _playData.value = data.copy(userCurrent = newCurrent)
-        }
-    }
-
-    // 정답 제출 함수
-    fun submitAnswer(userAnswer: Boolean, correctAnswer: Boolean) {
-        _playData.value?.let { data ->
-            // 정답 여부 판별
-            if (userAnswer == correctAnswer) {
-                // 정답일 경우 점수를 1점 추가
-                updatePoints(data.point + 1)
-                updateCurrent(data.userCurrent + 1)
-            }
-        }
-    }
-
-
 }
-
-

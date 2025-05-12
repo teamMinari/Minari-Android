@@ -2,11 +2,13 @@ package com.nohjason.minari.screens.news
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,7 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,50 +38,53 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.nohjason.minari.navigation.bottombar.BottomScreen
+import com.nohjason.minari.screens.rout.response.NewsData
+import com.nohjason.minari.ui.theme.MinariGray400
+import com.nohjason.minari.ui.theme.MinariGray900
+import com.nohjason.minari.ui.theme.button_bold
+import com.nohjason.minari.ui.theme.button_medium
 
 @Composable
 fun News(
-    navController: NavController,
-    newsViewModel: NewsViewModel = hiltViewModel()
+    newsList: List<NewsData>
 ) {
     val context = LocalContext.current
-    val getallNews by newsViewModel.getAllNews.collectAsState()
-    LaunchedEffect(Unit) {
-        newsViewModel.getAllNews("finance")
-    }
-    BackHandler(onBack = {
-        navController.popBackStack(BottomScreen.Home.rout, inclusive = false)
-    })
-//    val tag = listOf("금융", "증권", "산업/재계", "부동산", "글로벌 경제")
-    LazyColumn(
-        modifier = Modifier.padding(top = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-//        item {
-//            SwipeNews()
-//        }
-        if (getallNews != null) {
-            items(getallNews!!.data) { item ->
+
+    if (newsList.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .padding(top = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            newsList.forEach { item ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
-                            context.startActivity(intent)
+                        .clickable(enabled = !item.url.isNullOrBlank()) {
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Log.e("News", "Intent 실행 중 예외: ${e.message}")
+                            }
                         }
                         .padding(horizontal = 20.dp),
                 ) {
-                    if (item.thumbnail != null) {
+                    if (!item.thumbnail.isNullOrBlank()) {
                         Box(
                             modifier = Modifier
                                 .height(70.dp)
-//                                .padding(horizontal = 20.dp)
                                 .clip(RoundedCornerShape(10.dp))
                         ) {
                             AsyncImage(
@@ -89,18 +96,32 @@ fun News(
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                     }
-                    Text(text = item.title, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                }
-            }
-        } else {
-            item {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    Column {
+                        Text(
+                            text = item.title ?: "제목 없음",
+                            color = MinariGray900,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = button_bold
+                        )
+                        Text(
+                            text = item.uploadTime?: "시간 없음",
+                            color = MinariGray400,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = button_medium
+                        )
+                    }
                 }
             }
         }
     }
 }
+
+
+
+
+
 
 
 //@Preview(showSystemUi = true)

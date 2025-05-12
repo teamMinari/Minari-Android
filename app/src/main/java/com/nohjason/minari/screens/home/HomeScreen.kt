@@ -41,10 +41,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
+import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.minari.screens.home.data.HomeDummyData.list
@@ -54,16 +54,23 @@ import com.nohjason.minari.screens.home.ui.WordCardPager
 import com.nohjason.minari.screens.ui.button.MinariButton
 import com.nohjason.minari.screens.ui.button.NewsButton
 import com.nohjason.minari.screens.ui.text.MinariInputField
+import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariGray500
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.b2_bold
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = viewModel()
 ) {
+    var selectedCategory by remember { mutableStateOf("finance") }
+
     var text by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var backPressedTime by rememberSaveable { mutableStateOf(0L) }
@@ -177,9 +184,12 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     newsCategories.forEach { (iconResId, text, category) ->
+                        val isSelected = selectedCategory == category
                         NewsButton(
                             icon = painterResource(id = iconResId),
-                            text = text
+                            text = text,
+                            isSelected = false,
+                            onClick = { navController.navigate(BottomScreen.News.rout) }
                         )
                     }
                 }
@@ -231,9 +241,8 @@ fun HomeScreen(
 }
 
 
-//@Preview
-//@Composable
-//fun PreHome() {
-//    HomeScreen(navController = rememberNavController(),)
-//
-//}
+@Preview
+@Composable
+fun PreHome() {
+    HomeScreen(navController = rememberNavController(),)
+}

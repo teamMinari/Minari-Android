@@ -1,5 +1,7 @@
 package com.nohjason.minari.screens.quiz.data
 
+enum class QuizUiState { Waiting, Correct, Wrong, Tip }
+
 data class QuestionResponse(
     val status: Int, //200
     val message: String, //질문 난이도 별 조회 성공!"
