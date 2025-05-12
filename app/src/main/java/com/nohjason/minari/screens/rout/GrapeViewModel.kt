@@ -28,11 +28,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GrapeViewModel @Inject constructor(
+    private val preferencesManager: PreferencesManager,
     application: Application,
     private val api: ApiService
 ) : AndroidViewModel(application) {
-
-    private val preferencesManager = PreferencesManager(application)
 
     private val _route = MutableStateFlow<GrapesAll?>(null)
     val route: StateFlow<GrapesAll?> = _route
@@ -309,5 +308,3 @@ class GrapeViewModel @Inject constructor(
 //            }
 //        }
 //    }
-
-//}

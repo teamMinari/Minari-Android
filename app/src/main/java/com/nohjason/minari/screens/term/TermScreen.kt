@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
@@ -50,7 +51,7 @@ import com.nohjason.minari.ui.theme.pretendard_regular
 fun TermScreen(
     title: String,
     navController: NavController,
-    grapeViewModel: GrapeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    grapeViewModel: GrapeViewModel = hiltViewModel()
 ) {
     val getTerm by grapeViewModel.getTerm.collectAsState()
     var text by remember { mutableStateOf("") }

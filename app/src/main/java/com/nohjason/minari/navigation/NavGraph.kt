@@ -25,6 +25,7 @@ import com.nohjason.minari.screens.auth.ui.register_screen.LikeScreen
 import com.nohjason.minari.screens.auth.ui.register_screen.PasswordScreen
 import com.nohjason.minari.screens.auth.ui.register_screen.SelectJobScreen
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
+import com.nohjason.minari.screens.chat.ChatScreen
 import com.nohjason.minari.screens.home.HomeScreen
 import com.nohjason.minari.screens.term.TermScreen
 import com.nohjason.minari.screens.news.News
@@ -59,6 +60,10 @@ fun NavGraph(
         navController = navController,
         startDestination = BottomScreen.Home.rout,
     ) {
+
+        composable(Screens.ChatScreen.rout) {
+            ChatScreen(naviController = navController)
+        }
 
         composable(Screens.FirstScreen.rout) {
             FirstScreen(navController = navController)
@@ -113,10 +118,7 @@ fun NavGraph(
 
         //저장목록
         composable(Screens.Directory.rout) {
-            DirecScreen(
-//                direcViewModel = DirecViewModel,
-//                token = token
-            )
+            DirecScreen()
         }
 
         //칭호

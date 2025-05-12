@@ -15,6 +15,8 @@ import com.nohjason.minari.screens.auth.data.model.RefreshTokenRequest
 import com.nohjason.minari.screens.auth.data.model.RefreshTokenResponse
 import com.nohjason.minari.screens.auth.data.model.RegisterRequest
 import com.nohjason.minari.screens.auth.data.model.RegisterResponse
+import com.nohjason.minari.screens.chat.data.ChatMessage
+import com.nohjason.minari.screens.chat.data.ChatResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpsResponse
 import com.nohjason.minari.screens.profile.directory_screen.direc_data.DirecGpseResponse
@@ -36,6 +38,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    @POST("/chat")
+    suspend fun chat(
+        @Body body:ChatMessage
+    ): Response<ChatResponse>
+
     @POST("/member/refresh")
     suspend fun refreshToken(
         @Body body: RefreshTokenRequest

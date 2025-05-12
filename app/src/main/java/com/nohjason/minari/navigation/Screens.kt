@@ -4,6 +4,11 @@ sealed class Screens(
     val rout: String,
     val title: String,
 ) {
+    data object ChatScreen : Screens(
+        rout = "chatScreen",
+        title = "chat",
+    )
+
     data object FirstScreen : Screens(
         rout = "firstScreen",
         title = "First",

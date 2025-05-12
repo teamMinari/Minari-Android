@@ -44,6 +44,7 @@ import com.nohjason.minari.R
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.network.response.rout.GpsData
 import com.nohjason.minari.navigation.Screens
+import com.nohjason.minari.screens.home.data.HomeDummyData.list
 import com.nohjason.minari.ui.theme.MinariBlue
 import com.nohjason.minari.ui.theme.pretendard_extra_bold
 import com.nohjason.minari.ui.theme.pretendard_medium
@@ -54,15 +55,16 @@ fun Rout(
     navController: NavController,
     viewModel: GrapeViewModel = hiltViewModel(),
 ) {
-//    val preferences = getPreferences()
-//    val token = getFromPreferences(preferences, "token")
     val route by viewModel.route.collectAsState()
+
     LaunchedEffect(key1 = Unit) {
         viewModel.getAllGps()
     }
+
     BackHandler(onBack = {
         navController.popBackStack(BottomScreen.Home.rout, inclusive = false)
     })
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -94,59 +96,55 @@ fun Rout(
                 )
             }
         }
-//        val list: List<GpsData> = createDummyGpsData()
-//        items(list) { item ->
-//            Gps(
-//                onClick = { navController.navigate(Test.Grapes.rout+"/0") },
-//                iconClick = { /*TODO*/ },
-//                like = item.gpsLike,
-//                name = item.gpsName,
-//                time = item.gpsTime,
-//                content = item.gpsContent,
-//                list = item.gpTpList
-//            )
-//        }
-        if (route != null) {
-            if (route!!.data.size == 0) {
+
+        when {
+            route == null -> {
+                item {
+                    Box(modifier = Modifier.fillParentMaxWidth()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+            }
+            route?.data.isNullOrEmpty() -> {
                 item {
                     Box(modifier = Modifier.fillParentMaxWidth()) {
                         Text(text = "아직 없음", modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }
-            items(route!!.data) { item ->
-                Gps(
-                    onClick = { navController.navigate(Screens.Grapes.rout + "/${item.gpsId}") },
-                    iconClick = { viewModel.likes("GRAPES", item.gpsId) },
-                    like = item.gpsLike,
-                    name = item.gpsName,
-                    time = item.gpsTime,
-                    content = item.gpsContent,
-                    list = item.gpTpList
-                )
-            }
-        } else {
-            item {
-                Box(modifier = Modifier.fillParentMaxWidth()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            else -> {
+                items(route?.data ?: emptyList()) { item ->
+                    Gps(
+                        onClick = {
+                            navController.navigate(Screens.Grapes.rout + "/${item.gpsId}")
+                        },
+                        iconClick = { viewModel.likes("GRAPES", item.gpsId) },
+                        like = item.gpsLike,
+                        name = item.gpsName,
+                        time = item.gpsTime,
+                        content = item.gpsContent,
+                        ageGroup = item.gpsAgeGroup,
+                        work = item.gpsWork
+                    )
                 }
+
             }
         }
     }
 }
 
-fun createDummyGpsData(): List<GpsData> {
-    return listOf(
-        GpsData(
-            gpsId = 1,
-            gpsName = "돈이 움직이는 세상",
-            gpsContent = "",
-            gpsTime = 10,
-            gpsLike = false,
-            gpTpList = listOf("BEGINNER")
-        )
-    )
-}
+//fun createDummyGpsData(): List<GpsData> {
+//    return listOf(
+//        GpsData(
+//            gpsId = 1,
+//            gpsName = "돈이 움직이는 세상",
+//            gpsContent = "",
+//            gpsTime = 10,
+//            gpsLike = false,
+//            gpTpList = listOf("BEGINNER")
+//        )
+//    )
+//}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -155,9 +153,11 @@ fun Gps(
     iconClick: () -> Unit,
     like: Boolean,
     name: String,
-    time: Long,
+    time: Int,
     content: String,
-    list: List<String>
+    ageGroup: String,  // 추가
+    work: String       // 추가
+//    list: List<String>
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -207,8 +207,9 @@ fun Gps(
                             .background(MinariBlue)
                             .padding(horizontal = 10.dp, vertical = 2.dp),
                     ) {
+                        //후에 /gps/{gpsId}로 변경
                         Text(
-                            text = item,
+                            text = item.title,
                             fontFamily = pretendard_medium,
                             color = Color.White,
                             modifier = Modifier.align(Alignment.Center)

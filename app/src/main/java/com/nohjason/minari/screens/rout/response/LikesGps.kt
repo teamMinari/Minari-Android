@@ -16,5 +16,5 @@ data class Gps (
     val gpsContent: String,
     val gpsImg: String,
     val gpsLike: Boolean,
-    val gpsTpList: List<String>
+    val gpseTpList: List<String>
 )

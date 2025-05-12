@@ -31,10 +31,17 @@ fun MainScreen(
     LaunchedEffect(key1 = navController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             showBottomBar = when (destination.route) {
-                "quizplay" -> false
-                "Select_O" -> false
-                "Select_X" -> false
+                Screens.QuizSelectX.rout -> false
+                Screens.QuizSelectO.rout -> false
+                Screens.QuizPlayScreen.rout -> false
                 Screens.Login.rout -> false
+                Screens.IdScreen.rout -> false
+                Screens.FirstScreen.rout -> false
+                Screens.PasswordScreen.rout -> false
+                Screens.EmailScreen.rout -> false
+                Screens.LikeScreen.rout -> false
+                Screens.SelectJobScreen.rout -> false
+                Screens.ChatScreen.rout -> false
                 else -> true
             }
         }

@@ -126,26 +126,27 @@ fun Grapes(
                             text = "${gps!!.data.gpsTime}분 - 포도송이 - ${gps!!.data.gpCnt}/${gps!!.data.gpCntMax}포도알",
                             fontFamily = pretendard_regular
                         )
-                        val tag = gps!!.data.gpTpList
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(3.dp)
-                        ) {
-                            items(tag) { item ->
-                                Box(
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .background(MinariBlue)
-                                        .padding(horizontal = 10.dp)
-                                ) {
-                                    Text(
-                                        text = item,
-                                        color = Color.White,
-                                        fontFamily = pretendard_medium,
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
-                        }
+                        val tag = gps!!.data.gpsAgeGroup
+//                        val tag = gps!!.data.gpTpList
+//                        LazyRow(
+//                            horizontalArrangement = Arrangement.spacedBy(3.dp)
+//                        ) {
+//                            items(tag) { item ->
+//                                Box(
+//                                    modifier = Modifier
+//                                        .clip(CircleShape)
+//                                        .background(MinariBlue)
+//                                        .padding(horizontal = 10.dp)
+//                                ) {
+//                                    Text(
+//                                        text = item.,
+//                                        color = Color.White,
+//                                        fontFamily = pretendard_medium,
+//                                        fontSize = 12.sp
+//                                    )
+//                                }
+//                            }
+//                        }
                         Text(
                             text = gps!!.data.gpsContent,
                             fontFamily = pretendard_regular,

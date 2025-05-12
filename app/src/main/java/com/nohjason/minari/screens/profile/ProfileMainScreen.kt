@@ -34,6 +34,7 @@ import com.nohjason.minari.screens.profile.profile_element.ProfileButton
 import com.nohjason.minari.screens.profile.profile_element.RewardBar
 import com.nohjason.minari.screens.profile.likes.Dummy.likeDummy
 import com.nohjason.minari.screens.profile.likes.LikeList
+import com.nohjason.minari.screens.profile.profile_element.ProfileInfor
 
 @Composable
 fun ProfileMAinScreen(
@@ -75,13 +76,13 @@ fun ProfileMAinScreen(
                     tint = Color.Unspecified
                 )
             }
-//            ProfileInfor(
-//                id = profileData!!.id,
-//                email = profileData.email,
-//                totalExp = profileData.totalExp,
-//                level = profileData.level,
-//                title = profileData.title
-//            )
+            ProfileInfor(
+                id = profileData!!.id,
+                email = profileData.email,
+                totalExp = profileData.totalExp,
+                level = profileData.level,
+                title = profileData.title
+            )
             Row(
                 modifier = Modifier.padding(top = 22.dp)
             ) {

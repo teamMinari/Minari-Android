@@ -19,9 +19,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -59,15 +63,23 @@ import com.nohjason.minari.ui.theme.MinariGray500
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.b2_bold
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.nohjason.minari.screens.rout.GrapeViewModel
+import com.nohjason.minari.ui.theme.MinariBlue100
+import com.nohjason.minari.ui.theme.MinariBlue800
+import com.nohjason.minari.ui.theme.caption_bold
+import androidx.compose.foundation.shape.CircleShape as CircleShape1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    viewModel: GrapeViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     var text by remember { mutableStateOf("") }
@@ -78,9 +90,9 @@ fun HomeScreen(
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
 
-    val refreshResult by loginViewModel.refreshResult.collectAsState()
-    val refreshErrorCode by loginViewModel.refreshErrorCode.collectAsState()
-    val isLoggedIn by loginViewModel.isLoggedIn.collectAsState()
+//    val refreshResult by loginViewModel.refreshResult.collectAsState()
+//    val refreshErrorCode by loginViewModel.refreshErrorCode.collectAsState()
+//    val isLoggedIn by loginViewModel.isLoggedIn.collectAsState()
 
     // 자동 로그인 시도
     LaunchedEffect(Unit) {
@@ -104,6 +116,12 @@ fun HomeScreen(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        floatingActionButton = {
+            AiChatbotFab {
+                // 버튼 클릭 시 동작
+                navController.navigate(Screens.ChatScreen.rout)
+            }
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -137,7 +155,11 @@ fun HomeScreen(
                                 icon = painterResource(id = R.drawable.ic_search),
                                 label = "검색",
                                 onValueChange = { text = it },
-                                onClickAction = { /* 검색 동작 */ },
+                                onClickAction = {
+                                    val token = preferencesManager.getToken().toString()
+                                    viewModel.getTerm(termNm = text)
+                                    navController.navigate(Screens.Term.rout + "/${text}")
+                                },
                                 isPassword = false,
                                 modifier = Modifier.weight(1f)
                             )
@@ -233,6 +255,44 @@ fun HomeScreen(
         }
     }
 }
+
+@Composable
+fun AiChatbotFab(
+    onClick: () -> Unit
+) {
+    // 연한 파란색 배경(이미지처럼)
+    val backgroundColor = MinariBlue100 // 이미지 배경색에 맞게 조정
+
+    Surface(
+        modifier = Modifier
+            .size(110.dp), // 이미지 크기에 맞게 조정
+        shape = CircleShape1,
+        color = backgroundColor,
+        shadowElevation = 4.dp,
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_message), // 말풍선 아이콘
+                contentDescription = "AI 챗봇",
+                tint = MinariBlue800, // 진한 파란색
+                modifier = Modifier.size(50.dp)
+            )
+            Text(
+                text = "AI 챗봇",
+                color = MinariBlue800,
+                style = caption_bold
+            )
+        }
+    }
+}
+
 
 
 @Preview
