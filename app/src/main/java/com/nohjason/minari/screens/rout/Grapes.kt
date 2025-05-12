@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -54,7 +55,7 @@ import com.nohjason.minari.ui.theme.pretendard_semibold
 @Composable
 fun Grapes(
     navController: NavController,
-    viewModel: GrapeViewModel = viewModel(),
+    viewModel: GrapeViewModel = hiltViewModel(),
     id: Int,
 ) {
 //    val preferences = getPreferences()

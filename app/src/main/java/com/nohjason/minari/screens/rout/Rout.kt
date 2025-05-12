@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
@@ -51,7 +52,7 @@ import com.nohjason.minari.ui.theme.pretendard_semibold
 @Composable
 fun Rout(
     navController: NavController,
-    viewModel: GrapeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: GrapeViewModel = hiltViewModel(),
 ) {
 //    val preferences = getPreferences()
 //    val token = getFromPreferences(preferences, "token")

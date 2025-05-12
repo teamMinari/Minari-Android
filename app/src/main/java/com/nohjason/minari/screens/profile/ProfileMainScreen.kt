@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.nohjason.minari.R
@@ -36,7 +37,7 @@ import com.nohjason.minari.screens.profile.likes.LikeList
 
 @Composable
 fun ProfileMAinScreen(
-    profileViewModel: ProfileViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     profileData: ProfileResponse?,
     navHostController: NavHostController
 ) {
@@ -47,10 +48,10 @@ fun ProfileMAinScreen(
         profileViewModel.getProfile()
     }
 
-    if (data == null) {
-        Text(text = "No profile data available")
-        return
-    } else {
+//    if (data == null) {
+//        Text(text = "No profile data available")
+//        return
+//    } else {
         val scrollState = rememberScrollState()
 
         Column(
@@ -110,5 +111,5 @@ fun ProfileMAinScreen(
             Spacer(modifier = Modifier.height(25.dp))
         }
 
-    }
+//    }
 }

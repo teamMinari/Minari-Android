@@ -36,12 +36,13 @@ import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.h4_bold
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
 fun EmailScreen(
     navController: NavController? = null, // Preview용 null 허용
-    registerViewModel: RegisterViewModel? = null
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     var textState by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }

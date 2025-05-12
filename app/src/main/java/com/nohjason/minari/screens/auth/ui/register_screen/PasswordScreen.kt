@@ -42,11 +42,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun PasswordScreen(
     navController: NavController? = null, // Preview용 null 허용
-    registerViewModel: RegisterViewModel? = null
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }

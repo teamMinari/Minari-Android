@@ -45,11 +45,12 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SelectJobScreen(
     navController: NavController? = null,
-    registerViewModel: RegisterViewModel? = null
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     val registerResponse by registerViewModel?.registerResponse?.collectAsState() ?: remember { mutableStateOf(null) }
     LaunchedEffect(registerResponse) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.network.response.GetAllLikesTerm
 import com.nohjason.minari.network.response.GetTerm
 import com.nohjason.minari.network.response.TermLikes
@@ -15,7 +16,6 @@ import com.nohjason.minari.network.response.rout.Grapes
 import com.nohjason.minari.network.response.rout.GrapesAll
 import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.rout.response.LikesResponse
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GrapeViewModel @Inject constructor(
-    application: Application
+    application: Application,
+    private val api: ApiService
 ) : AndroidViewModel(application) {
 
     private val preferencesManager = PreferencesManager(application)

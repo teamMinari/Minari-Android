@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.preferences.PreferencesManager
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    application: Application
+    application: Application,
+    private val api: ApiService
 ) : AndroidViewModel(application) {
 
     private val preferencesManager = PreferencesManager(application)

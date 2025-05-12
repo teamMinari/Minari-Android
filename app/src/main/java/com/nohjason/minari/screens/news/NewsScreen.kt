@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -66,7 +67,7 @@ import com.nohjason.minari.ui.theme.button_medium
 @Composable
 fun NewsScreen(
     navController: NavController,
-    newsViewModel: NewsViewModel = viewModel()
+    newsViewModel: NewsViewModel = hiltViewModel()
 ) {
     var selectedCategory by remember { mutableStateOf("security") }
     val listState = rememberLazyListState()

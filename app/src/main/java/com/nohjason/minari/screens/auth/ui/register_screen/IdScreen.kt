@@ -38,11 +38,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun IdScreen(
     navController: NavController? = null, // Preview용 null 허용
-    registerViewModel: RegisterViewModel? = null
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     var textState by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.preferences.PreferencesManager
 import com.nohjason.minari.screens.rout.response.GetAllNews
-import com.nohjason.myapplication.network.RetrofitInstance.api
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

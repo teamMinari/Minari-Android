@@ -3,11 +3,13 @@ package com.nohjason.minari.screens.auth.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nohjason.minari.network.ApiService
 import com.nohjason.minari.screens.auth.data.model.LoginRequest
 import com.nohjason.minari.screens.auth.data.model.LoginResponse
 import com.nohjason.minari.screens.auth.data.model.RefreshTokenRequest
 import com.nohjason.minari.screens.auth.data.model.RefreshTokenResponse
-import com.nohjason.myapplication.network.RetrofitInstance.api
+import com.nohjason.myapplication.network.AuthApiService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,13 +17,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    @AuthApiService private val api: ApiService
+) : ViewModel() {
     private val _refreshResult = MutableStateFlow<RefreshTokenResponse?>(null)
     val refreshResult: StateFlow<RefreshTokenResponse?> = _refreshResult
 
+    private val _refreshErrorCode = MutableStateFlow<Int?>(null)
+    val refreshErrorCode: StateFlow<Int?> = _refreshErrorCode
+
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+
     fun refreshToken(refreshToken: String) {
-        Log.d("TAG", "refreshToken() called with refreshToken: $refreshToken")
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
@@ -29,16 +40,15 @@ class LoginViewModel : ViewModel() {
                 }
                 if (response.isSuccessful) {
                     _refreshResult.value = response.body()
-                    Log.d("TAG", "refreshToken: 토큰 갱신 성공")
+                    _refreshErrorCode.value = null
+                    _isLoggedIn.value = true
                 } else {
-                    Log.e("TAG", "refreshToken: 서버 응답 에러 - 코드: ${response.code()}")
+                    _refreshErrorCode.value = response.code()
+                    _isLoggedIn.value = false
                 }
-            } catch (e: IOException) {
-                Log.e("TAG", "refreshToken: 네트워크 오류", e)
-            } catch (e: HttpException) {
-                Log.e("TAG", "refreshToken: HTTP 오류 - 코드: ${e.code()}", e)
             } catch (e: Exception) {
-                Log.e("TAG", "refreshToken: 알 수 없는 오류", e)
+                _refreshErrorCode.value = null
+                _isLoggedIn.value = false
             }
         }
     }

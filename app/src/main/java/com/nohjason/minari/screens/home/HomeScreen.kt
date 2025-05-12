@@ -77,36 +77,30 @@ fun HomeScreen(
 
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
-    val refreshResult by loginViewModel.refreshResult.collectAsState()
 
+    val refreshResult by loginViewModel.refreshResult.collectAsState()
+    val refreshErrorCode by loginViewModel.refreshErrorCode.collectAsState()
+    val isLoggedIn by loginViewModel.isLoggedIn.collectAsState()
+
+    // 자동 로그인 시도
     LaunchedEffect(Unit) {
         if (preferencesManager.isAutoLogin()) {
             val refreshToken = preferencesManager.getRefreshToken()
             if (!refreshToken.isNullOrEmpty()) {
                 loginViewModel.refreshToken(refreshToken)
             } else {
-                // 리프레시 토큰 없으면 로그인 화면으로
                 navController.navigate(Screens.FirstScreen.rout) {
-                    popUpTo(0)
+                    popUpTo(0) { inclusive = true }
                 }
             }
         } else {
-            // 자동로그인 설정 안됨 → 로그인 화면으로
             navController.navigate(Screens.FirstScreen.rout) {
-                popUpTo(0)
+                popUpTo(0) { inclusive = true }
             }
         }
     }
 
-    BackHandler(onBack = {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - backPressedTime < 2000) {
-            (context as ComponentActivity).finish()
-        } else {
-            Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
-            backPressedTime = currentTime
-        }
-    })
+
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
