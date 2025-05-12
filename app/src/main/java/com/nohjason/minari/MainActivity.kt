@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
+import com.nohjason.minari.screens.quiz.data.QuizViewModel
 import com.nohjason.minari.ui.theme.MinariTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +30,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(loginViewModel = loginViewModel)
+                    MainScreen(
+                        loginViewModel = loginViewModel,
+                    )
 //                    ScreenSetup(viewModel, loginViewModel)
                 }
             }

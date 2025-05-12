@@ -1,5 +1,6 @@
 package com.nohjason.minari.screens.quiz.data
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
@@ -7,92 +8,99 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
 import com.nohjason.minari.network.ApiService
+import com.nohjason.minari.network.response.Quize
 import com.nohjason.minari.preferences.PreferencesManager
+import com.nohjason.minari.screens.quiz.quiz_main.selectPlayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
-    private val api: ApiService
+    private val apiService: ApiService
 ) : ViewModel() {
 
     private val _playData = MutableStateFlow<PlayData?>(null)
     val playData: StateFlow<PlayData?> = _playData
 
-    private val _uiState = MutableStateFlow(QuizUiState.Waiting)
-    val uiState: StateFlow<QuizUiState> = _uiState
+    /**
+     * 서버에서 퀴즈 리스트 받아오기 (suspend 함수)
+     */
+    suspend fun fetchQuestions(): QuestionResponse {
+        val token = preferencesManager.getToken()
+        if (token.isNullOrEmpty()) {
+            throw IllegalStateException("토큰이 없습니다.")
+        }
 
-    private val _loading = MutableStateFlow(false)
-    val loading: StateFlow<Boolean> = _loading
+        return withContext(Dispatchers.IO) {
+            apiService.getQuestion(token)
+        }
+    }
 
-    // 퀴즈 문제 불러오기
-    fun loadQuestions(level: Int) {
+    /**
+     * 서버에서 퀴즈 받아와 playData 초기화 (비동기 호출용)
+     */
+    fun loadQuestions(
+        onSuccess: () -> Unit = {},
+        onError: (String) -> Unit = {}
+    ) {
         viewModelScope.launch {
-            _loading.value = true
-            val token = preferencesManager.getToken() ?: return@launch
             try {
-                val response = withContext(Dispatchers.IO) {
-                    api.getQuestion(token = token, level = level)
-                }
-                // 성공 시 PlayData로 변환
-                if (response.status == 200 && response.data.isNotEmpty()) {
-                    _playData.value = PlayData(
-                        userCurrent = 0,
-                        point = 0,
-                        qtNum = 0,
-                        qtList = response.data
-                    )
-                    _uiState.value = QuizUiState.Waiting
+                val response = fetchQuestions()
+                if (response.status == 0 && response.data.isNotEmpty()) {
+                    val dataList = selectPlayData(qestionAll = response) // 가공 함수 호출
+                    initializePlayData(dataList)
+                    onSuccess()
+                } else {
+                    onError(response.message)
                 }
             } catch (e: Exception) {
-                // 에러 처리(로딩 중지)
-            } finally {
-                _loading.value = false
+                onError(e.message ?: "알 수 없는 오류가 발생했습니다.")
             }
         }
     }
 
-    // 정답 제출
-    fun submitAnswer(userAnswer: Boolean) {
-        val data = _playData.value ?: return
-        val currentQuestion = data.qtList.getOrNull(data.qtNum) ?: return
-        val isCorrect = userAnswer == currentQuestion.qtAnswer
-
-        // 상태 업데이트
-        _uiState.value = if (isCorrect) QuizUiState.Correct else QuizUiState.Wrong
-
-        // 점수/정답수 업데이트
-        if (isCorrect) {
-            _playData.value = data.copy(
-                point = data.point + 1,
-                userCurrent = data.userCurrent + 1
-            )
-        }
+    // PlayData 초기화 함수
+    fun initializePlayData(data: PlayData) {
+        _playData.value = data
     }
 
-    fun showTip() {
-        _uiState.value = QuizUiState.Tip
-    }
-
-    // 다음 문제로 이동
+    // 퀴즈를 다음으로 진행하는 함수
     fun nextQuestion() {
-        val data = _playData.value ?: return
-        val nextNum = data.qtNum + 1
-        if (nextNum < data.qtList.size) {
-            _playData.value = data.copy(qtNum = nextNum)
-            _uiState.value = QuizUiState.Waiting
+        _playData.value?.let { data ->
+            val newQtNum = data.qtNum + 1
+            if (newQtNum < data.qtList.size) {
+                _playData.value = data.copy(qtNum = newQtNum)
+            }
         }
-        // 마지막 문제면 결과 화면 이동은 UI에서 처리
     }
 
-    // 상태 초기화 (퀴즈 다시 시작 등)
-    fun reset() {
+    // 점수 업데이트 함수
+    fun updatePoints(newPoints: Int) {
         _playData.value?.let { data ->
-            _playData.value = data.copy(qtNum = 0, userCurrent = 0, point = 0)
-            _uiState.value = QuizUiState.Waiting
+            _playData.value = data.copy(point = newPoints)
+        }
+    }
+
+    fun updateCurrent(newCurrent: Int) {
+        _playData.value?.let { data ->
+            _playData.value = data.copy(userCurrent = newCurrent)
+        }
+    }
+
+    // 정답 제출 함수
+    fun submitAnswer(userAnswer: Boolean, correctAnswer: Boolean) {
+        _playData.value?.let { data ->
+            if (userAnswer == correctAnswer) {
+                updatePoints(data.point + 1)
+                updateCurrent(data.userCurrent + 1)
+            }
         }
     }
 }
+
+

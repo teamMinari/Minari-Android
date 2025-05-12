@@ -147,10 +147,9 @@ interface ApiService {
     ): Response<ProfileResponse>
 
     //퀴즈 문제
-    @GET("/questions/level/{level}")
+    @GET("/questions")
     suspend fun getQuestion(
         @Header("Authorization") token: String,
-        @Path("level") level: Int
     ): QuestionResponse
 
     //저장목록

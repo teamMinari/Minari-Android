@@ -1,7 +1,7 @@
 package com.nohjason.minari.screens.quiz.quiz_play
 
-
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,9 +18,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,18 +39,22 @@ import com.nohjason.minari.screens.quiz.data.QuizViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun SeletO(
+fun SeletX(
     navHostController: NavHostController,
-    quizViewModel: QuizViewModel = viewModel()
+    quizViewModel: QuizViewModel
 ) {
-    val playData = quizViewModel.playData.value
+    // playData를 collectAsState로 구독
+    val playData by quizViewModel.playData.collectAsState()
 
     val qtNum = playData?.qtNum ?: 0
-
     val qtContents = playData?.qtList?.getOrNull(qtNum)?.qtContents ?: "No content available"
-    val qtAnswer = playData?.qtList?.getOrNull(qtNum)?.qtAnswer ?: "No answer available"
+    val qtAnswer = playData?.qtList?.getOrNull(qtNum)?.qtAnswer ?: false
     val qtCmt = playData?.qtList?.getOrNull(qtNum)?.qtCmt ?: "No comment available"
     val qtSize = playData?.qtList?.size ?: 9
+
+    val context = LocalContext.current
+
+    println(playData)
 
     Box(
         modifier = Modifier
@@ -87,7 +97,7 @@ fun SeletO(
                         .height(227.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE4E4E4)
+                        containerColor = Color(0xFFFC7C7C)
                     ),
                     onClick = {
                         //Button바꿔야함
@@ -97,7 +107,7 @@ fun SeletO(
                         modifier = Modifier
                             .width(90.dp)
                             .height(98.dp),
-                        painter = painterResource(id = R.drawable.emoji_x),
+                        painter = painterResource(id = R.drawable.emoji_x_color),
                         contentDescription = null,
                     )
                 }
@@ -108,10 +118,9 @@ fun SeletO(
                         .height(227.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFB0CDF5)
+                        containerColor = Color(0xFFEAEAEA)
                     ),
                     onClick = {
-
                         //Button바꿔야함
                     }
                 ) {
@@ -119,7 +128,7 @@ fun SeletO(
                         modifier = Modifier
                             .width(90.dp)
                             .height(98.dp),
-                        painter = painterResource(id = R.drawable.emoji_o_color),
+                        painter = painterResource(id = R.drawable.emoji_o),
                         contentDescription = null
                     )
                 }
@@ -133,16 +142,15 @@ fun SeletO(
                     painter = painterResource(id = R.drawable.emoji_tip),
                     contentDescription = null, tint = Color.Unspecified
                 )
-                //함수값
                 if (qtAnswer == true) {
                     Text(
-                        text = "정답",
+                        text = "오답",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 } else {
                     Text(
-                        text = "오답",
+                        text = "정답",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
@@ -168,7 +176,7 @@ fun SeletO(
                     navHostController.navigate(Screens.QuizEndScreen.rout)
                 } else {
                     quizViewModel.nextQuestion()
-                    navHostController.navigate("quizplay")
+                    navHostController.navigate(Screens.QuizPlayScreen.rout)
                 }
             }
         ) {

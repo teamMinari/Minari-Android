@@ -1,5 +1,8 @@
 package com.nohjason.minari.screens.quiz.quiz_main
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -31,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +55,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -61,10 +67,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
-import com.nohjason.minari.screens.quiz.QuizButton
+import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.screens.quiz.data.PlayData
 import com.nohjason.minari.screens.quiz.data.QuestionResponse
 import com.nohjason.minari.screens.quiz.data.QuizViewModel
@@ -87,19 +94,19 @@ import kotlin.math.exp
 @Composable
 fun QuizMainScreen(
     navHostController: NavHostController,
-//    quizViewModel: QuizViewModel? = null
+    quizViewModel: QuizViewModel
 ) {
-    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    var navigateToQuiz by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(MinariWhite) // 최상위 배경을 흰색으로 설정
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState) // 스크롤 활성화
                 .padding(top = 66.dp),
             verticalArrangement = Arrangement.spacedBy(40.dp)
         ) {
@@ -109,20 +116,29 @@ fun QuizMainScreen(
             ) {
                 QuizMainButton(
                     type = "경제퀴즈",
-                    onClick = {},
+                    onClick = {
+                        coroutineScope.launch {
+                            val qtAll = quizViewModel.fetchQuestions()
+                            val dataList = selectPlayData(qestionAll = qtAll)
+                            quizViewModel.initializePlayData(data = dataList)
+                            navHostController.navigate(Screens.QuizPlayScreen.rout)
+                        }
+                    },
                     backgroundColors = listOf(Color(0xFF6889FF), Color(0xFFFF64F5)),
                     iconRes = R.drawable.ic_economyquiz,
                     imageRes = R.drawable.img_economyquiz
                 )
                 QuizMainButton(
                     type = "복습퀴즈",
-                    onClick = {},
+                    onClick = {
+                        Toast.makeText(context, "아직 준비 중인 기능입니다!", Toast.LENGTH_SHORT).show()
+                    },
                     backgroundColors = listOf(Color(0xFF2EDCC4), Color(0xFF266DD3)),
                     iconRes = R.drawable.ic_repitquiz,
                     imageRes = R.drawable.img_repitquiz
                 )
 
-                TitleActionRow()
+                TitleActionRow(navHostController = navHostController)
             }
 
             WavyBackgroundBox(
@@ -149,25 +165,40 @@ fun QuizMainScreen(
 }
 
 
+
 @Composable
-private fun TitleActionRow() {
+private fun TitleActionRow(
+    navHostController: NavHostController,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        val url = "https://pf.kakao.com/_xiiQZn"
+        val context = LocalContext.current
+
         ActionItem(
             iconRes = R.drawable.ic_star,
             text = "칭호보기",
             tint = MinariBlue500,
             alpha = 0.64f,
-            onClick = {}
+            onClick = {
+                navHostController.navigate(Screens.Alias.rout)
+            }
         )
         ActionItem(
             iconRes = R.drawable.ic_tell,
             text = "문의하기",
             tint = MinariGray900,
             alpha = 1f,
-            onClick = {}
+            onClick = {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    // 예외 처리 (예: 토스트 메시지 등)
+                }
+            }
         )
     }
 }
@@ -417,12 +448,23 @@ private fun QuizMainAlia(
     }
 }
 
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreQuizMainScreen() {
-    QuizMainScreen(
-        navHostController = rememberNavController()
+fun selectPlayData(qestionAll: QuestionResponse): PlayData {
+    val qtSelected = qestionAll.data.shuffled().take(10)
+    println(qtSelected)
+    return PlayData(
+        userCurrent = 0,         // 현재 유저 진행 상황, 0으로 초기화
+        point = 0,               // 초기 포인트, 0으로 초기화
+        qtNum = 0,               // 첫 번째 문제부터 시작, 0으로 초기화
+        qtList = qtSelected // 10개의 질문을 담은 리스트
     )
 }
+
+
+
+//@Preview(showBackground = true)
+//@Composable
+//fun PreQuizMainScreen() {
+//    QuizMainScreen(
+//        navHostController = rememberNavController()
+//    )
+//}

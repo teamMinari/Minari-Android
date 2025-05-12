@@ -5,11 +5,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import android.annotation.SuppressLint
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -47,6 +49,7 @@ import com.nohjason.minari.screens.quiz.quiz_main.QuizMainScreen
 fun NavGraph(
     navController: NavHostController,
 ) {
+    val quizViewModel: QuizViewModel = hiltViewModel()
 //    val preferences = getPreferences()
 //    val token = getFromPreferences(preferences, "token")
     val context = LocalContext.current
@@ -98,11 +101,6 @@ fun NavGraph(
             HomeScreen(
                 navController = navController,
             )
-        }
-
-        // 퀴즈
-        composable(BottomScreen.Quiz.rout) {
-//            QuizMainScreen(navHostController = navController)
         }
 
         // 프로필
@@ -176,18 +174,43 @@ fun NavGraph(
 
 
 
-        //퀴즈
+
+
+        // 퀴즈
+        composable(BottomScreen.Quiz.rout) {
+            QuizMainScreen(
+                navHostController = navController,
+                quizViewModel = quizViewModel
+            )
+        }
+
+        // 퀴즈 엔딩 화면
         composable(
-            "quizplay",
+            Screens.QuizPlayScreen.rout,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(500)
                 )
             }
-        ) {
-//            SeletO(navHostController = navController, quizViewModel = quizViewModel)
+        ) { backStackEntry ->
+            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
         }
+
+// 퀴즈 플레이 화면
+        composable(
+            Screens.QuizPlayScreen.rout,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(500)
+                )
+            }
+        ) { backStackEntry ->
+            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
+        }
+
+// 퀴즈 선택 X 화면
         composable(
             Screens.QuizSelectX.rout,
             enterTransition = {
@@ -196,31 +219,23 @@ fun NavGraph(
                     animationSpec = tween(500)
                 )
             }
-        ) {
-//            SeletX(navHostController = navController, quizViewModel = quizViewModel)
+        ) { backStackEntry ->
+            SeletX(navHostController = navController, quizViewModel = quizViewModel)
         }
+
+// 퀴즈 선택 O 화면
         composable(
-            Screens.QuizPlaycreen.rout,
+            Screens.QuizSelectO.rout, // 기존에 "quizplay"로 되어있는데, 필요하면 Screens.QuizSelectO.rout 등으로 변경
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(500)
                 )
             }
-        ) {
-            QuizPlayScreen(navController)
+        ) { backStackEntry ->
+            SeletO(navHostController = navController, quizViewModel = quizViewModel)
         }
-        composable(
-            Screens.QuizEndScreen.rout,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(500)
-                )
-            }
-        ) {
-//            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
-        }
+
 
 
 

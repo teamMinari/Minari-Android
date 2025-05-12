@@ -70,7 +70,7 @@ sealed class Screens(
     )
 
     //퀴즈
-    data object QuizPlaycreen : Screens(
+    data object QuizPlayScreen : Screens(
         rout = "quizplay",
         title = "quizplay",
     )

@@ -17,11 +17,12 @@ import com.nohjason.minari.navigation.bottombar.BottomBar
 import com.nohjason.minari.navigation.NavGraph
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.screens.auth.viewmodel.LoginViewModel
+import com.nohjason.minari.screens.quiz.data.QuizViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
