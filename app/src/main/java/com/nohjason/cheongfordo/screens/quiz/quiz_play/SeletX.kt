@@ -1,0 +1,186 @@
+package com.nohjason.cheongfordo.screens.quiz.quiz_play
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.navigation.Screens
+import com.nohjason.cheongfordo.screens.quiz.data.QuizViewModel
+import com.nohjason.cheongfordo.ui.theme.MinariBlue600
+import com.nohjason.cheongfordo.ui.theme.MinariGray600
+import com.nohjason.cheongfordo.ui.theme.MinariGray800
+import com.nohjason.cheongfordo.ui.theme.b1_bold
+import com.nohjason.cheongfordo.ui.theme.b2_medium
+import com.nohjason.cheongfordo.ui.theme.h4_bold
+
+@SuppressLint("StateFlowValueCalledInComposition")
+@Composable
+fun SeletX(
+    navHostController: NavHostController,
+    quizViewModel: QuizViewModel
+) {
+    // playData를 collectAsState로 구독
+    val playData by quizViewModel.playData.collectAsState()
+
+    val qtNum = playData?.qtNum ?: 0
+    val qtContents = playData?.qtList?.getOrNull(qtNum)?.qtContents ?: "No content available"
+    val qtAnswer = playData?.qtList?.getOrNull(qtNum)?.qtAnswer ?: false
+    val qtCmt = playData?.qtList?.getOrNull(qtNum)?.qtCmt ?: "No comment available"
+    val qtSize = playData?.qtList?.size ?: 9
+
+    val context = LocalContext.current
+
+    println(playData)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.85f),
+        ) {
+
+            //문제-------------------------------
+            Text(
+                modifier = Modifier.padding(top = 77.dp),
+                color = MinariBlue600,
+                style = h4_bold,
+                text = "${qtNum + 1}/10"
+            )
+            Text(
+                modifier = Modifier
+                    .padding(top = 10.dp),
+                color = MinariGray600,
+                style = b2_medium,
+                text = qtContents
+            )
+
+
+            //버튼---------------------------------------------------------------------------------------------
+            Row(
+                modifier = Modifier.padding(top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    //x버튼
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(227.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFC7C7C)
+                    ),
+                    onClick = {
+                        //Button바꿔야함
+                    },
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .height(98.dp),
+                        painter = painterResource(id = R.drawable.emoji_x_color),
+                        contentDescription = null,
+                    )
+                }
+                Button(//o버튼
+                    modifier = Modifier
+                        .weight(1f)
+                        .width(150.dp)
+                        .height(227.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFEAEAEA)
+                    ),
+                    onClick = {
+                        //Button바꿔야함
+                    }
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .height(98.dp),
+                        painter = painterResource(id = R.drawable.emoji_o),
+                        contentDescription = null
+                    )
+                }
+            }
+
+            //해설-------------------------------
+            Row(
+                modifier = Modifier.padding(top = 20.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.emoji_tip),
+                    contentDescription = null, tint = Color.Unspecified
+                )
+                if (qtAnswer == true) {
+                    Text(
+                        text = "오답",
+                        style = b1_bold,
+                        color = MinariGray800
+                    )
+                } else {
+                    Text(
+                        text = "정답",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+            Text(
+                modifier = Modifier.padding(4.dp),
+                text = qtCmt
+            )
+        }
+        Button(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 52.dp)
+                .fillMaxWidth(0.85f)
+                .height(45.dp),
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF363CD5)
+            ),
+            onClick = {
+                if (qtNum + 2 > qtSize) {
+                    navHostController.navigate(Screens.QuizEndScreen.rout)
+                } else {
+                    quizViewModel.nextQuestion()
+                    navHostController.navigate(Screens.QuizPlayScreen.rout)
+                }
+            }
+        ) {
+            Text(text = "다음")
+        }
+    }
+}
