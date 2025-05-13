@@ -38,8 +38,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+    @GET("gps/category")
+    suspend fun getGpsByCategory(
+        @Header("Authorization") token: String,
+        @Query("age") age: String,
+        @Query("work") work: String
+    ): Response<GrapesAll>
+
     @POST("/chat")
     suspend fun chat(
+        @Header("Authorization") token: String,
         @Body body:ChatMessage
     ): Response<ChatResponse>
 

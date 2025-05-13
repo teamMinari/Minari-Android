@@ -91,6 +91,7 @@ fun FirstScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MinariWhite)
             .padding(horizontal = screenHeight * 0.04f, vertical = screenHeight * 0.03f),
     ) {
         Spacer(modifier = Modifier.height(screenHeight * 0.02f))

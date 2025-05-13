@@ -37,6 +37,10 @@ import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.screens.quiz.data.QuizViewModel
+import com.nohjason.minari.ui.theme.MinariBlue600
+import com.nohjason.minari.ui.theme.MinariGray600
+import com.nohjason.minari.ui.theme.b2_medium
+import com.nohjason.minari.ui.theme.h4_bold
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -68,16 +72,15 @@ fun SeletO(
             //문제-------------------------------
             Text(
                 modifier = Modifier.padding(top = 77.dp),
-                color = Color(0xFF363CD5),
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
+                color = MinariBlue600,
+                style = h4_bold,
                 text = "${qtNum + 1}/10"
             )
             Text(
                 modifier = Modifier
                     .padding(top = 10.dp),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                color = MinariGray600,
+                style = b2_medium,
                 text = qtContents
             )
 

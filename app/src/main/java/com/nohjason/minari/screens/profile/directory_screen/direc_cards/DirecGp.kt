@@ -52,7 +52,8 @@ fun DirecGp(
         Icon(
             painter = painterResource(
                 id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
-                else R.drawable.minari_book_mark
+                //추후변경
+                else R.drawable.ic_back
             ),
             contentDescription = null,
             tint = Color.Unspecified,

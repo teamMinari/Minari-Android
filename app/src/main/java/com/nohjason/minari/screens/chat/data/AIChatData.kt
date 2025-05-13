@@ -16,3 +16,9 @@ data class Message(
 data class ChatMessage(
     val question: String
 )
+
+// UI에서 쓸 메시지 모델 (isUser 구분)
+data class ChatMessageUi(
+    val text: String,
+    val isUser: Boolean
+)

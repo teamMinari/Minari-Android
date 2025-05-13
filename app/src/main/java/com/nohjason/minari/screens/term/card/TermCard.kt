@@ -67,7 +67,7 @@ fun TermCard(
                 ) {
                     items(starCount) {
                         Icon(
-                            painter = painterResource(R.drawable.star),
+                            painter = painterResource(R.drawable.ic_star),
                             contentDescription = "star",
                             tint = Color.Unspecified,
                             modifier = Modifier.size(15.dp)

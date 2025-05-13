@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nohjason.minari.R
+import com.nohjason.minari.ui.theme.b1_bold
 
 @Composable
 fun TitleBar(
@@ -36,11 +37,11 @@ fun TitleBar(
                 shape = RoundedCornerShape(
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
-                ) // Bottom만 stroke 적용
+                )
             )
-            .height(60.dp)
+            .height(97.dp)
             .background(color = Color.White)
-            .padding(top = 28.dp)
+            .padding(top = 52.dp)
     ){
         Row(
             modifier = Modifier
@@ -68,7 +69,7 @@ fun TitleBar(
                 Text(
                     text = title,
                     fontSize = 17.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    style = b1_bold,
                     modifier = Modifier
                         .padding(start = 5.dp)
                 )

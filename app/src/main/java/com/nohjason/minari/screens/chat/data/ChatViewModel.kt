@@ -44,7 +44,10 @@ class ChatViewModel @Inject constructor(
                     return@launch
                 }
                 // 실제 서버에 POST /chat 요청
-                val response = apiService.chat(ChatMessage(question))
+                val response = apiService.chat(
+                    token = token.toString(),  // "Bearer " 접두사 추가
+                    body = ChatMessage(question)
+                )
                 if (response.isSuccessful) {
                     val body = response.body()
                     val aiContent = body?.choices?.firstOrNull()?.message?.content
@@ -65,8 +68,3 @@ class ChatViewModel @Inject constructor(
     }
 }
 
-// UI에서 쓸 메시지 모델 (isUser 구분)
-data class ChatMessageUi(
-    val text: String,
-    val isUser: Boolean
-)

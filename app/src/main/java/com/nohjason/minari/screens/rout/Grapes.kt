@@ -266,7 +266,7 @@ fun Gpse(
                     contentDescription = null
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.book_mark),
+                    painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = null,
                     tint = if (gpLike) MinariBlue else Color.Gray,
                     modifier = Modifier

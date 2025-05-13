@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -43,13 +45,19 @@ import com.nohjason.minari.ui.theme.b2_bold
 fun AiChatText(text: String) {
     val richTextState = rememberRichTextState()
 
-    Column {
-        Row {
+    Column (
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+    ){
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+        ){
             Icon(
                 painter = painterResource(R.drawable.ic_ai),
                 contentDescription = null,
                 tint = Color.Unspecified
             )
+            Spacer(modifier = Modifier.width(5.dp))
             Text(
                 text = "AI챗봇",
                 color = MinariBlue900,

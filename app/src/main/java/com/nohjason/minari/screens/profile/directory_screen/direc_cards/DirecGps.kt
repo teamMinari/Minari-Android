@@ -65,7 +65,7 @@ fun DirecGps(
                 Icon(
                     painter = painterResource(
                         id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
-                        else R.drawable.minari_book_mark
+                        else R.drawable.ic_back
                     ),
                     contentDescription = null,
                     tint = Color.Unspecified,

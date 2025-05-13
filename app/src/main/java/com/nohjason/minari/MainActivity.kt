@@ -24,11 +24,15 @@ class MainActivity : ComponentActivity() {
 //        RetrofitInstance.init(applicationContext)
 
         setContent {
-            MinariTheme {
+            MinariTheme (
+                darkTheme = false,
+                dynamicColor = false
+            ){
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
+//                    containerColor = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen(
                         loginViewModel = loginViewModel,

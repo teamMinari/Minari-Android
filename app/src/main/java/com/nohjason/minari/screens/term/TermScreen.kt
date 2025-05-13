@@ -107,7 +107,7 @@ fun TermScreen(
                                 val difficulty = item.termDifficulty[3].toString().toInt()
                                 items(difficulty) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.star),
+                                        painter = painterResource(id = R.drawable.ic_star),
                                         contentDescription = null,
                                         modifier = Modifier.size(15.dp),
                                         tint = Color.Unspecified
@@ -116,7 +116,7 @@ fun TermScreen(
                             }
                             Spacer(modifier = Modifier.weight(0.1f))
                             Icon(
-                                painter = painterResource(R.drawable.book_mark),
+                                painter = painterResource(R.drawable.ic_back),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(20.dp)

@@ -52,11 +52,17 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             if (currentDestination?.route !in listOf(
-                    Screens.FirstScreen.rout,
-                    Screens.Login.rout,
-                    Screens.Signup.rout,
-                    Screens.Question.rout,
-                    Screens.LastSignup.rout,
+                    Screens.QuizSelectX.rout,
+                    Screens.QuizSelectO.rout,
+                    Screens.QuizPlayScreen.rout ,
+                    Screens.Login.rout ,
+                    Screens.IdScreen.rout ,
+                    Screens.FirstScreen.rout ,
+                    Screens.PasswordScreen.rout ,
+                    Screens.EmailScreen.rout ,
+                    Screens.LikeScreen.rout ,
+                    Screens.SelectJobScreen.rout,
+                    Screens.ChatScreen.rout ,
                 )
             ) {
                 BottomBar(

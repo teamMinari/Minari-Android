@@ -8,13 +8,17 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariGray300
+import com.nohjason.minari.ui.theme.caption_medium
 
 @Composable
 fun BottomBar(
@@ -49,14 +53,24 @@ fun RowScope.AddItem(
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     BottomNavigationItem(
         label = {
-            Text(text = bottomScreen.title)
+            val Color = if (bottomScreen.rout == currentDestination?.route) MinariBlue500 else MinariGray300
+            Text(
+                text = bottomScreen.title,
+                style = caption_medium,
+                color = Color
+            )
         },
         icon = {
+            val iconColor = if (bottomScreen.rout == currentDestination?.route) MinariBlue500 else MinariGray300
             Icon(
                 imageVector = bottomScreen.icon(),
-                contentDescription = null
+                contentDescription = null,
+                tint = iconColor
             )
         },
         selected = currentDestination?.hierarchy?.any {

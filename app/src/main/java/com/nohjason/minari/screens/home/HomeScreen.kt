@@ -181,7 +181,6 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF5F6FA))
                 .padding(innerPadding),
         ) {
             // 1. 뉴스 태그 검색 섹션
@@ -249,7 +248,9 @@ fun HomeScreen(
                     line = true,
                     enabled = true,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
-                ) { }
+                ) {
+                    navController.navigate(BottomScreen.News.rout)
+                }
                 Spacer(modifier = Modifier.height(83.dp))
             }
         }
@@ -265,7 +266,7 @@ fun AiChatbotFab(
 
     Surface(
         modifier = Modifier
-            .size(110.dp), // 이미지 크기에 맞게 조정
+            .size(80.dp),
         shape = CircleShape1,
         color = backgroundColor,
         shadowElevation = 4.dp,
@@ -273,8 +274,7 @@ fun AiChatbotFab(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 20.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -282,7 +282,7 @@ fun AiChatbotFab(
                 painter = painterResource(id = R.drawable.ic_message), // 말풍선 아이콘
                 contentDescription = "AI 챗봇",
                 tint = MinariBlue800, // 진한 파란색
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.size(30.dp)
             )
             Text(
                 text = "AI 챗봇",

@@ -16,31 +16,31 @@ sealed class BottomScreen(
 ) {
     data object Home : BottomScreen(
         rout = "home",
-        title = "Home",
-        icon = { Icons.Default.Home }
+        title = "홈",
+        icon = { ImageVector.vectorResource(id = R.drawable.ic_home) }
     )
 
     data object Profile : BottomScreen(
         rout = "profile",
-        title = "Profile",
-        icon = { Icons.Default.Person }
+        title = "마이",
+        icon = { ImageVector.vectorResource(id = R.drawable.ic_profile) }
     )
 
     data object News : BottomScreen(
         rout = "news",
-        title = "News",
-        icon = { ImageVector.vectorResource(id = R.drawable.news) }
+        title = "뉴스",
+        icon = { ImageVector.vectorResource(id = R.drawable.ic_news) }
     )
 
     data object Quiz : BottomScreen(
         rout = "quiz",
-        title = "Quiz",
-        icon = { ImageVector.vectorResource(id = R.drawable.quiz) }
+        title = "퀴즈",
+        icon = { ImageVector.vectorResource(id = R.drawable.ic_ticket) }
     )
 
     data object Rout : BottomScreen(
         rout = "rout",
-        title = "Rout",
-        icon = { ImageVector.vectorResource(id = R.drawable.rout) }
+        title = "튜토리얼",
+        icon = { ImageVector.vectorResource(id = R.drawable.ic_map) }
     )
 }

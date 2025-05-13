@@ -1,5 +1,6 @@
 package com.nohjason.minari.screens.quiz.quizmain
 
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nohjason.minari.R
+import com.nohjason.minari.navigation.bottombar.BottomScreen
 import com.nohjason.minari.ui.theme.MinariBlue400
 import com.nohjason.minari.ui.theme.MinariGray100
 import com.nohjason.minari.ui.theme.MinariGray200
@@ -44,6 +47,9 @@ fun PointBox(
     point: Int,
     navController: NavController
 ) {
+    val url = "https://pf.kakao.com/_xiiQZn"
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +78,12 @@ fun PointBox(
                 color = MinariBlue400,
                 style = b2_bold,
                 modifier = Modifier.clickable {
-                    navController.navigate("webview?url=${Uri.encode("http://pf.kakao.com/_xiiQZn")}")
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        // 예외 처리 (예: 토스트 메시지 등)
+                    }
                 }
             )
         }

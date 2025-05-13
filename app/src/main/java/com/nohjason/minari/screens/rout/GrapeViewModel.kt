@@ -63,6 +63,43 @@ class GrapeViewModel @Inject constructor(
         }
     }
 
+    private val _categoryRoute = MutableStateFlow<GrapesAll?>(null)
+    val categoryRoute: StateFlow<GrapesAll?> = _categoryRoute
+
+    fun getGpsByCategory(age: String, work: String) {
+        viewModelScope.launch {
+            val token = preferencesManager.getToken()
+            if (token.isNullOrEmpty()) {
+                Log.e("TAG", "getGpsByCategory: 토큰 없음")
+                return@launch
+            }
+
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    api.getGpsByCategory(
+                        token = token,
+                        age = age,
+                        work = work
+                    )
+                }
+
+                if (response.isSuccessful) {
+                    _categoryRoute.value = response.body()
+                    Log.d("TAG", "getGpsByCategory: 카테고리별 포도송이 서버 통신 성공")
+                } else {
+                    Log.e("TAG", "getGpsByCategory: 서버 응답 에러 - 코드: ${response.code()}")
+                }
+            } catch (e: IOException) {
+                Log.e("TAG", "getGpsByCategory: 네트워크 오류", e)
+            } catch (e: HttpException) {
+                Log.e("TAG", "getGpsByCategory: HTTP 오류 - 코드: ${e.code()}", e)
+            } catch (e: Exception) {
+                Log.e("TAG", "getGpsByCategory: 알 수 없는 오류", e)
+            }
+        }
+    }
+
+
     private val _gpsDetail = MutableStateFlow<Grapes?>(null)
     val gpsDetail: StateFlow<Grapes?> = _gpsDetail
 

@@ -75,7 +75,7 @@ fun ChatScreen(
                     .fillMaxWidth()
                     .imePadding()
                     .background(Color.White)
-                    .padding(8.dp)
+                    .padding(horizontal = 20.dp, vertical = 5.dp)
             ) {
                 Row(
                     Modifier
@@ -105,8 +105,7 @@ fun ChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.White)
-                .padding(16.dp),
+                .background(Color.White),
             reverseLayout = false
         ) {
             items(chatList) { msg ->

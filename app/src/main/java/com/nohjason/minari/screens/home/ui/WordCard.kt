@@ -34,6 +34,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.nohjason.minari.R
+import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.ui.theme.MinariBlue500
 import com.nohjason.minari.ui.theme.MinariGray200
 import com.nohjason.minari.ui.theme.MinariGray400
@@ -74,7 +75,7 @@ fun WordCardPager(
                     .fillMaxWidth()
                     .clickable {
                         // 3. 클릭 시 상세 화면으로 이동
-                        navController.navigate("wordDetail/${wordCardData.third}") // third는 ID 값으로 가정
+                        navController.navigate(Screens.Term.rout + "${wordCardData.third}") // third는 ID 값으로 가정
                     }
             ) {
                 WordCard(

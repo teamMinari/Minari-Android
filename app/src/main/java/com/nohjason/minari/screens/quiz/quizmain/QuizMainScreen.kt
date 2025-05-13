@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -51,6 +53,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -71,6 +74,13 @@ import com.nohjason.minari.ui.theme.caption_bold
 import kotlinx.coroutines.launch
 
 @Composable
+fun heightPercentage(percent: Float): Dp {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    return screenHeight * percent
+}
+
+
+@Composable
 fun QuizMainScreen(
     navHostController: NavHostController,
     quizViewModel: QuizViewModel
@@ -78,19 +88,20 @@ fun QuizMainScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var navigateToQuiz by remember { mutableStateOf(false) }
+    val topPadding = heightPercentage(0.03f)
+    val spacerHeight = heightPercentage(0.027f)
+    val columnSpacing = heightPercentage(0.054f)
+    val innerColumnSpacing = heightPercentage(0.0135f)
 
-    Box(
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = topPadding),
+        verticalArrangement = Arrangement.spacedBy(columnSpacing),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 66.dp),
-            verticalArrangement = Arrangement.spacedBy(40.dp)
-        ) {
+        item {
             Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(innerColumnSpacing),
                 modifier = Modifier.padding(horizontal = 20.dp)
             ) {
                 QuizMainButton(
@@ -119,7 +130,9 @@ fun QuizMainScreen(
 
                 TitleActionRow(navHostController = navHostController)
             }
+        }
 
+        item {
             WavyBackgroundBox(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -132,7 +145,7 @@ fun QuizMainScreen(
                         name = "슬기로운 포도알",
                         exp = 1000
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(spacerHeight))
                     PointBox(
                         navController = navHostController,
                         point = 2584
@@ -146,12 +159,20 @@ fun QuizMainScreen(
 
 
 @Composable
+fun widthPercentage(percent: Float): Dp {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    return screenWidth * percent
+}
+
+@Composable
 private fun TitleActionRow(
     navHostController: NavHostController,
 ) {
+    val space = widthPercentage(0.04f) // 16.dp ≈ 4% of screen width
+
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(space)
     ) {
         val url = "https://pf.kakao.com/_xiiQZn"
         val context = LocalContext.current
@@ -182,6 +203,7 @@ private fun TitleActionRow(
     }
 }
 
+
 @Composable
 private fun ActionItem(
     @DrawableRes iconRes: Int,
@@ -190,10 +212,14 @@ private fun ActionItem(
     alpha: Float,
     onClick: () -> Unit
 ) {
+    val padding = widthPercentage(0.01f) // 4dp 대체
+    val iconSize = widthPercentage(0.04f) // 16dp 대체
+    val spacerWidth = widthPercentage(0.01f) // 4dp 대체
+
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(4.dp),
+            .padding(padding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -201,10 +227,10 @@ private fun ActionItem(
             contentDescription = null,
             tint = tint,
             modifier = Modifier
-                .size(16.dp)
+                .size(iconSize)
                 .alpha(alpha)
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(spacerWidth))
         Text(
             text = text,
             fontSize = 12.sp,
@@ -214,6 +240,7 @@ private fun ActionItem(
     }
 }
 
+
 @Composable
 fun QuizMainButton(
     onClick: () -> Unit,
@@ -222,23 +249,31 @@ fun QuizMainButton(
     @DrawableRes iconRes: Int,
     @DrawableRes imageRes: Int
 ) {
+    val height = heightPercentage(0.18f)
+    val paddingStart = widthPercentage(0.05f)
+    val paddingTop = heightPercentage(0.05f)
+    val iconSize = widthPercentage(0.06f)
+    val imageSize = widthPercentage(0.45f)
+    val offsetX = widthPercentage(0.025f)
+    val offsetY = heightPercentage(0.025f)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(130.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .height(height)
+            .clip(RoundedCornerShape(widthPercentage(0.04f))) // 16dp 대체
             .background(brush = Brush.horizontalGradient(colors = backgroundColors))
             .clickable(onClick = onClick)
     ) {
         Column(
-            modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(start = paddingStart, top = paddingTop),
+            verticalArrangement = Arrangement.spacedBy(heightPercentage(0.01f)) // 8dp 대체
         ) {
             Icon(
                 painter = painterResource(id = iconRes),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(iconSize)
             )
             Text(
                 text = "$type >",
@@ -253,34 +288,39 @@ fun QuizMainButton(
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .size(180.dp)
+                .size(imageSize)
                 .align(Alignment.BottomEnd)
-                .offset(x = 10.dp, y = 10.dp)
+                .offset(x = offsetX, y = offsetY)
         )
     }
 }
+
 
 @Composable
 private fun WavyBackgroundBox(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    // 비율 기반 크기 계산
+    val canvasHeight = heightPercentage(0.1f)
+    val circleRadius = heightPercentage(0.014f)
+    val horizontalPadding = widthPercentage(0.05f)
+    val verticalPadding = heightPercentage(0.022f)
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .defaultMinSize(minHeight = screenHeight) // 화면 전체 높이 이상 확보
             .background(MinariGray50)
     ) {
+        // 파도 배경 (Canvas)
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp)
+                .height(canvasHeight)
+                .align(Alignment.TopStart)
         ) {
             val width = size.width
             val height = size.height
-
             val waveY = height * 0.3f
 
             val path = Path().apply {
@@ -296,43 +336,40 @@ private fun WavyBackgroundBox(
             }
 
             drawPath(path = path, color = MinariWhite)
-            drawRect(
-                color = MinariWhite,
-                topLeft = Offset(0f, waveY),
-                size = androidx.compose.ui.geometry.Size(width, height - waveY)
-            )
             drawCircle(
                 color = MinariWhite,
-                radius = 10.dp.toPx(),
+                radius = circleRadius.toPx(),
                 center = Offset(width * 0.5f, height * -0.08f)
             )
         }
 
+        // 컨텐츠 영역 (흰색 배경)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f) // 남은 공간 모두 차지
+                .padding(top = canvasHeight * 0.7f) // 파도와 겹치도록 조정
                 .background(MinariWhite)
-                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
         ) {
             content()
         }
     }
 }
 
+
 @Composable
 private fun QuizMainAlia(
     name: String,
     exp: Int,
 ) {
-    val boxSize = 108.dp       // 72.dp * 1.5
-    val imageSize = 84.dp      // 56.dp * 1.5
-    val strokeWidth = 9f       // 6f * 1.5
+    val boxSize = widthPercentage(0.27f)
+    val imageSize = widthPercentage(0.21f)
+    val strokeWidthDp = widthPercentage(0.022f)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(widthPercentage(0.03f)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -340,26 +377,24 @@ private fun QuizMainAlia(
                 .size(boxSize),
             contentAlignment = Alignment.Center
         ) {
-            // 배경 원형 테두리
             Canvas(modifier = Modifier.size(boxSize)) {
+                val strokeWidthPx = strokeWidthDp.toPx()
                 drawArc(
                     color = Color(0xFFE0E3ED),
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
-                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                    style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
                 )
-                // 예시로 50% 진행 (exp에 따라 조정)
-                val percentage = 0.5f // exp/totalExp로 계산 가능
+                val percentage = 0.5f // exp/totalExp 계산 가능
                 drawArc(
                     color = Color(0xFF00D33B),
                     startAngle = -90f,
                     sweepAngle = 360f * percentage,
                     useCenter = false,
-                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                    style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
                 )
             }
-            // 캐릭터 이미지 (동그랗게)
             Image(
                 painter = painterResource(id = R.drawable.img_economyquiz),
                 contentDescription = null,
@@ -368,11 +403,11 @@ private fun QuizMainAlia(
                     .clip(CircleShape)
             )
         }
+
         Spacer(modifier = Modifier.weight(0.1f))
-        // 텍스트 영역
+
         Column(
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -387,33 +422,36 @@ private fun QuizMainAlia(
                 color = MinariGray900
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
-            // 말풍선 스타일
+            Spacer(modifier = Modifier.height(heightPercentage(0.008f))) // 6dp 대체 (약 0.8%)
+
             Row(
                 horizontalArrangement = Arrangement.End
             ) {
                 Box(
                     modifier = Modifier
                         .border(
-                            width = 1.dp,
+                            width = widthPercentage(0.003f), // 1dp 대체
                             color = MinariGray200,
                             shape = RoundedCornerShape(
-                                topStart = 20.dp,
-                                topEnd = 20.dp,
-                                bottomStart = 20.dp,
+                                topStart = widthPercentage(0.05f),  // 20dp 대체
+                                topEnd = widthPercentage(0.05f),
+                                bottomStart = widthPercentage(0.05f),
                                 bottomEnd = 0.dp
                             )
                         )
                         .background(
                             color = Color.White,
                             shape = RoundedCornerShape(
-                                topStart = 20.dp,
-                                topEnd = 20.dp,
+                                topStart = widthPercentage(0.05f),
+                                topEnd = widthPercentage(0.05f),
                                 bottomStart = 0.dp,
-                                bottomEnd = 20.dp
+                                bottomEnd = widthPercentage(0.05f)
                             )
                         )
-                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                        .padding(
+                            horizontal = widthPercentage(0.05f), // 20dp 대체
+                            vertical = heightPercentage(0.014f)  // 10dp 대체
+                        ),
                 ) {
                     Text(
                         text = "안녕, 난 농사 짓는 포도알이야~",
@@ -426,6 +464,7 @@ private fun QuizMainAlia(
         }
     }
 }
+
 
 fun selectPlayData(qestionAll: QuestionResponse): PlayData {
     val qtSelected = qestionAll.data.shuffled().take(10)

@@ -59,7 +59,7 @@ fun DirecTerm(
                 // 별 아이콘 생성
                 repeat(numberOfStars) {
                     Icon(
-                        painter = painterResource(id = R.drawable.star),
+                        painter = painterResource(id = R.drawable.ic_star),
                         contentDescription = null,
                         tint = Color.Unspecified,
                         modifier = Modifier
@@ -82,7 +82,7 @@ fun DirecTerm(
         Icon(
             painter = painterResource(
                 id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
-                else R.drawable.minari_book_mark
+                else R.drawable.ic_back
             ),
             contentDescription = null,
             tint = Color.Unspecified,

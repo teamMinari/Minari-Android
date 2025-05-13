@@ -1,5 +1,7 @@
 package com.nohjason.minari.screens.news
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +24,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nohjason.minari.screens.rout.response.NewsData
+import com.nohjason.minari.ui.theme.MinariGray400
 import com.nohjason.minari.ui.theme.MinariGray900
 import com.nohjason.minari.ui.theme.MinariWhite
 import com.nohjason.minari.ui.theme.b1_bold
@@ -38,9 +42,10 @@ import com.nohjason.minari.ui.theme.button_medium
 @Composable
 fun HotNewsCard(
     item: NewsData,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -48,6 +53,10 @@ fun HotNewsCard(
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White)
             .padding(bottom = 12.dp)
+            .clickable {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
+                context.startActivity(intent)
+            }
     ) {
         Box(
             modifier = Modifier
@@ -83,9 +92,8 @@ fun HotNewsCard(
             ) {
                 Text(
                     text = "\uD83D\uDD25HOT",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
+                    color = MinariWhite,
+                    style = button_bold
                 )
             }
         }
@@ -103,8 +111,8 @@ fun HotNewsCard(
         // 시간
         Text(
             text = item.uploadTime?: "시간 없음",
-            color = Color(0xFF9E9E9E),
-            fontSize = 13.sp,
+            color = MinariGray400,
+            style = button_medium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
@@ -125,6 +133,5 @@ fun HotNewsCardPreview() {
 
     HotNewsCard(
         item = sampleNews,
-        onClick = { /* 클릭 동작 처리 */ }
     )
 }

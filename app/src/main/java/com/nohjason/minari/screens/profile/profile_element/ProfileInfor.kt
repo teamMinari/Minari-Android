@@ -184,7 +184,7 @@ fun ProfileInfor(
                     )
                 } else {
                     Image(
-                        painter = painterResource(id = R.drawable.default_profile),
+                        painter = painterResource(id = R.drawable.ic_profile),
                         contentDescription = null,
                         modifier = Modifier
                             .width(140.dp)

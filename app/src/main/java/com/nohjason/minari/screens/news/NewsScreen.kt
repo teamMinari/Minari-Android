@@ -90,17 +90,15 @@ fun NewsScreen(
         modifier = Modifier
             .padding(start = 25.dp, end = 25.dp, top = 60.dp)
             .fillMaxSize()
-            .background(Color(0xFFF5F6FA))
     ) {
         item {
             if (hotNewsList.isNotEmpty()) {
                 HorizontalPager(
                     count = hotNewsList.size,
-                    state = pagerState
+                    state = pagerState,
                 ) { page ->
                     HotNewsCard(
                         item = hotNewsList[page],
-                        onClick = { /* 원하는 동작 */ }
                     )
                 }
 
@@ -138,7 +136,10 @@ fun NewsScreen(
             Text(
                 text = "뉴스 태그 검색",
                 style = b2_bold,
+                color = MinariGray900
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

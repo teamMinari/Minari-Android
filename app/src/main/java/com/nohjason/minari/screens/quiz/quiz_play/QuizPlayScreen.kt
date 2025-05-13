@@ -2,7 +2,10 @@ package com.nohjason.minari.screens.quiz.quiz_play
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,8 +40,15 @@ import androidx.navigation.NavHostController
 import com.nohjason.minari.R
 import com.nohjason.minari.navigation.Screens
 import com.nohjason.minari.navigation.bottombar.BottomScreen
+import com.nohjason.minari.screens.quiz.QuizPopup
 import com.nohjason.minari.screens.quiz.clickOnce
 import com.nohjason.minari.screens.quiz.data.QuizViewModel
+import com.nohjason.minari.ui.theme.MinariBlue400
+import com.nohjason.minari.ui.theme.MinariBlue600
+import com.nohjason.minari.ui.theme.MinariGray600
+import com.nohjason.minari.ui.theme.b2_medium
+import com.nohjason.minari.ui.theme.h4_bold
+import com.nohjason.minari.ui.theme.pretendard_bold
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -56,6 +66,14 @@ fun QuizPlayScreen(
 
     val context = LocalContext.current
 
+    var showPopup by remember { mutableStateOf(false) }
+    var isTipClicked by remember { mutableStateOf(true) }
+
+    BackHandler(enabled = true){
+        showPopup = true
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,16 +89,15 @@ fun QuizPlayScreen(
             //문제-------------------------------
             Text(
                 modifier = Modifier.padding(top = 77.dp),
-                color = Color(0xFF363CD5),
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
+                color = MinariBlue600,
+                style = h4_bold,
                 text = "${qtNum + 1}/10"
             )
             Text(
                 modifier = Modifier
                     .padding(top = 10.dp),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                color = MinariGray600,
+                style = b2_medium,
                 text = qtContents
             )
 
@@ -147,24 +164,69 @@ fun QuizPlayScreen(
             }
 
             //해설-------------------------------
-            Row (
-                modifier = Modifier.padding(top = 20.dp)
-            ){
-                Icon(painter = painterResource(id = R.drawable.emoji_tip),
-                    contentDescription = null, tint = Color.Unspecified)
-                Text(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    text = "Tip"
-                )
-            }
-            Text(
-                modifier = Modifier.padding(4.dp),
-                text = qtTip
-            )
+//            Row (
+//                modifier = Modifier
+//                    .padding(top = 20.dp)
+//                    .clickable (
+//                        indication = null,
+//                        interactionSource = remember { MutableInteractionSource() }
+//                    ) {
+//                        if (isTipClicked) {
+//                            isTipClicked = false
+//                            quizViewModel.minusPoints()
+//                        }
+//                    }
+//            ){
+//                Icon(
+//                    painter = painterResource(id = R.drawable.emoji_tip),
+//                    contentDescription = null,
+//                    tint = Color.Unspecified,
+//                )
+//                Text(
+//                    fontFamily = pretendard_bold,
+//                    fontSize = 20.sp,
+//                    text = "Tip"
+//                )
+//            }
+//            if (isTipClicked) {
+//                Text(
+//                    modifier = Modifier.padding(4.dp),
+//                    fontFamily = pretendard_medium,
+//                    text = "tip 아이콘 클릭 시 힌트를 받는 대신 \n 받게 되는 포인트가 크게 줄어들게 됩니다.",
+//                    color = Color(0xFF9C9C9C)
+//                )
+//            }
+//
+//            if (!isTipClicked) {
+//                Text(
+//                    modifier = Modifier.padding(4.dp),
+//                    fontFamily = pretendard_medium,
+//                    text = qtTip
+//                )
+//            }
+//        }
+//
+//        BackHandler(enabled = true){
+//            showPopup = true
+//        }
+//
+//        if (showPopup) {
+//            QuizPopup(
+//                onDismissRequest = {
+//                    showPopup = false
+//                }, // 취소
+//                onConfirmation = {
+//                    showPopup = false
+//                    navHostController.navigate(BottomScreen.Quiz.rout)
+//                },  // 확인
+//                dialogTitle = "뒤로 돌아가기",
+//                dialogText = "정말로 퀴즈를 종료시겠습니까?",
+//            )
+//        }
         }
     }
 }
+
 
 //@Preview(showBackground = true)
 //@Composable

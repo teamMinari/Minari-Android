@@ -144,7 +144,7 @@ fun Grape(
                             Text(text = "2분")
                             Spacer(modifier = Modifier.weight(0.1f))
                             Icon(
-                                painter = painterResource(id = R.drawable.book_mark),
+                                painter = painterResource(id = R.drawable.ic_book_mark_deactivate),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(20.dp)
