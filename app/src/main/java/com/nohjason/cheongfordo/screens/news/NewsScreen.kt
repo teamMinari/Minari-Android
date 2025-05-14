@@ -52,13 +52,13 @@ fun NewsScreen(
 
     // 뉴스 로드
     LaunchedEffect(selectedCategory) {
-        newsViewModel.getCategoryNews(selectedCategory)
+        newsViewModel.getAllNews(selectedCategory)
     }
     LaunchedEffect(Unit) {
         newsViewModel.getHotNews()
     }
     val hotNewsList = newsViewModel.hotNews.collectAsState().value?.data?.take(3) ?: emptyList()
-    val categoryNews = newsViewModel.categoryNews.collectAsState().value
+    val categoryNews = newsViewModel.getAllNews.collectAsState().value
     val categoryNewsList = categoryNews?.data ?: emptyList()
 
 

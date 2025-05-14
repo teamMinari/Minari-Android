@@ -1,5 +1,9 @@
 package com.nohjason.cheongfordo.screens.home
 
+import android.content.Context
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -24,6 +29,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,24 +62,38 @@ import com.nohjason.cheongfordo.ui.theme.b2_bold
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.nohjason.cheongfordo.screens.rout.GrapeViewModel
+import com.nohjason.cheongfordo.network.response.GetAllTermsResponse
+import com.nohjason.cheongfordo.network.response.Term
+import com.nohjason.cheongfordo.screens.home.todayterm.TodayTerm
+import com.nohjason.cheongfordo.screens.home.todayterm.getRandomItems
+import com.nohjason.cheongfordo.screens.home.todayterm.loadRandomItems
+import com.nohjason.cheongfordo.screens.home.todayterm.saveRandomItems
+import com.nohjason.cheongfordo.screens.profile.profile_data.ProfileViewModel
+import com.nohjason.cheongfordo.screens.ui.titlebar.SearchBar
 import com.nohjason.cheongfordo.ui.theme.MinariBlue100
 import com.nohjason.cheongfordo.ui.theme.MinariBlue800
 import com.nohjason.cheongfordo.ui.theme.caption_bold
+import com.nohjason.minari.screens.rout.GrapeViewModel
+import com.nohjason.myapplication.network.MainViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.compose.foundation.shape.CircleShape as CircleShape1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: GrapeViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     var text by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var backPressedTime by rememberSaveable { mutableStateOf(0L) }
     var selectedCategory by remember { mutableStateOf("finance") }
+    val getAllTerms by mainViewModel.getAllTerms.collectAsState()
 
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
@@ -81,6 +101,16 @@ fun HomeScreen(
 //    val refreshResult by loginViewModel.refreshResult.collectAsState()
 //    val refreshErrorCode by loginViewModel.refreshErrorCode.collectAsState()
 //    val isLoggedIn by loginViewModel.isLoggedIn.collectAsState()
+
+    BackHandler(onBack = {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - backPressedTime < 2000) {
+            (context as ComponentActivity).finish()
+        } else {
+            Toast.makeText(context, "한 번 더 누르면 앱을 끌 수 있어요'", Toast.LENGTH_SHORT).show()
+            backPressedTime = currentTime
+        }
+    })
 
     // 자동 로그인 시도
     LaunchedEffect(Unit) {
@@ -101,12 +131,10 @@ fun HomeScreen(
     }
 
 
-
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             AiChatbotFab {
-                // 버튼 클릭 시 동작
                 navController.navigate(Screens.ChatScreen.rout)
             }
         },
@@ -115,44 +143,8 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.White,
                 ),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp))
-                    .fillMaxWidth()
-                    .height(125.dp),
                 title = {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.height(22.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.grape), // 로고 아이콘 추가
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            MinariInputField(
-                                icon = painterResource(id = R.drawable.ic_search),
-                                label = "검색",
-                                onValueChange = { text = it },
-                                onClickAction = {
-                                    val token = preferencesManager.getToken().toString()
-                                    viewModel.getTerm(termNm = text)
-                                    navController.navigate(Screens.Term.rout + "/${text}")
-                                },
-                                isPassword = false,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
+                    SearchBar(navController = navController)
                 },
                 scrollBehavior = scrollBehavior,
             )
@@ -202,6 +194,7 @@ fun HomeScreen(
 
 
             // 2. 오늘의 경제 단어 섹션
+//            val randomItems = getRandomItems(context, getAllTerms!!)
             item {
                 Text(
                     text = "오늘의 경제 단어",
@@ -210,7 +203,14 @@ fun HomeScreen(
                 )
 
                 // WordCard 스크롤 뷰
-                WordCardPager(wordCardDataList = wordCardDataList, navController = navController)
+//                val randomItems = getRandomItems(context, getAllTerms!!)
+//                items(randomItems) { item ->
+//                    TodayTerm(navController, item = item)
+//                }
+                WordCardPager(
+                    wordCardDataList = wordCardDataList,
+                    navController = navController
+                )
 
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -281,10 +281,26 @@ fun AiChatbotFab(
     }
 }
 
+fun getRandomItems(context: Context, allTerms: GetAllTermsResponse): List<Term> {
+    val sharedPref = context.getSharedPreferences("random_items_prefs", Context.MODE_PRIVATE)
+    val lastSavedDate = sharedPref.getString("last_saved_date", "") ?: ""
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-
-@Preview
-@Composable
-fun PreHome() {
-    HomeScreen(navController = rememberNavController(),)
+    return if (currentDate != lastSavedDate) {
+        // 날짜가 다르면 새로운 랜덤 리스트 생성
+        val randomItems = allTerms.data.shuffled().take(5)
+        saveRandomItems(context, randomItems, currentDate)
+        randomItems
+    } else {
+        // 날짜가 같으면 저장된 리스트 불러오기
+        loadRandomItems(context)
+    }
 }
+
+
+
+//@Preview
+//@Composable
+//fun PreHome() {
+//    HomeScreen(navController = rememberNavController(),)
+//}

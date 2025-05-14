@@ -38,18 +38,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_regular
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @Composable
 fun ProfileInfor(
@@ -182,7 +181,7 @@ fun ProfileInfor(
                     )
                 } else {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_profile),
+                        painter = painterResource(id = R.drawable.img_default_profile),
                         contentDescription = null,
                         modifier = Modifier
                             .width(140.dp)
@@ -217,7 +216,7 @@ fun ProfileInfor(
                 Text(
                     text = "${level}Lv",
                     fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = pretendard_semibold,
                     color = Color.White,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -230,7 +229,7 @@ fun ProfileInfor(
         ){
             Text(
                 text = id,
-                fontWeight = FontWeight.SemiBold,
+                fontFamily = pretendard_semibold,
                 fontSize = 20.sp
             )
             if(title != null){
@@ -244,7 +243,7 @@ fun ProfileInfor(
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
                     text = title,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = pretendard_bold,
                     fontSize = 13.sp
                 )
             }
@@ -252,109 +251,10 @@ fun ProfileInfor(
         Spacer(modifier = Modifier.height(3.dp))
         Text(
             text = email,
-            fontWeight = FontWeight.Normal,
+            fontFamily = pretendard_regular,
             fontSize = 12.sp
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Row{
-            Text(
-                text = "관심주제:",
-                color = Color(0xFF363CD5),
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = "금융, 글로벌 경제, 채권",
-                fontWeight = FontWeight.Medium
-            )
-        }
     }
 }
-
-//@Composable
-//fun ProfileCard(
-//    id: String = "박지민 님",
-//    email: String = "rhddldi669@gmail.com",
-//    totalExp: Int = 50,
-//    level: Int = 2,
-//    title: String? = "소비대왕"
-//) {
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(16.dp),
-//        shape = RoundedCornerShape(16.dp),
-//        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-//        colors = CardDefaults.cardColors(containerColor = Color.White)
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            // 사용자 정보
-//            Column(
-//                modifier = Modifier
-//                    .padding(start = 16.dp)
-//                    .weight(1f)
-//            ) {
-//                Row(
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Text(
-//                        text = id,
-//                        fontWeight = FontWeight.Bold,
-//                        fontSize = 16.sp
-//                    )
-//
-//                    if (title != null) {
-//                        Spacer(modifier = Modifier.width(8.dp))
-//                        Text(
-//                            text = title,
-//                            fontSize = 12.sp,
-//                            color = Color.Gray
-//                        )
-//                    }
-//                }
-//
-//                Spacer(modifier = Modifier.height(4.dp))
-//
-//                Text(
-//                    text = email,
-//                    fontSize = 12.sp,
-//                    color = Color.Gray
-//                )
-//            }
-//
-//            // 프로필 이미지
-//            Image(
-//                painter = painterResource(id = R.drawable.default_profile),
-//                contentDescription = "프로필 이미지",
-//                modifier = Modifier
-//                    .size(48.dp)
-//                    .clip(CircleShape)
-//                    .border(1.dp, Color.LightGray, CircleShape),
-//                contentScale = ContentScale.Crop
-//            )
-//        }
-//    }
-//}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileCardPreview() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = Color(0xFFF5F6FA)
-    ) {
-//        ProfileCard(
-//            id = "박지민 님",
-//            email = "rhddldi669@gmail.com",
-//            totalExp = 50,
-//            level = 2,
-//            title = "소비대왕"
-//        )
-    }
-}
-
 

@@ -5,10 +5,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,13 +21,14 @@ import com.nohjason.cheongfordo.screens.auth.ui.register_screen.IdScreen
 import com.nohjason.cheongfordo.screens.auth.ui.register_screen.LikeScreen
 import com.nohjason.cheongfordo.screens.auth.ui.register_screen.PasswordScreen
 import com.nohjason.cheongfordo.screens.auth.ui.register_screen.SelectJobScreen
+import com.nohjason.cheongfordo.screens.auth.viewmodel.LoginViewModel
 import com.nohjason.cheongfordo.screens.chat.ChatScreen
 import com.nohjason.cheongfordo.screens.home.HomeScreen
 import com.nohjason.cheongfordo.screens.term.TermScreen
 import com.nohjason.cheongfordo.screens.news.NewsScreen
 import com.nohjason.cheongfordo.screens.profile.alias_screen.AliasScreen
 import com.nohjason.cheongfordo.screens.profile.directory_screen.DirecScreen
-import com.nohjason.cheongfordo.screens.profile.profile_data.DummyProfileData.profileData
+import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecViewModel
 import com.nohjason.cheongfordo.screens.rout.Grape
 import com.nohjason.cheongfordo.screens.rout.Grapes
 import com.nohjason.cheongfordo.screens.rout.Rout
@@ -37,209 +38,160 @@ import com.nohjason.cheongfordo.screens.quiz.quiz_play.QuizPlayScreen
 import com.nohjason.cheongfordo.screens.quiz.quiz_play.SeletO
 import com.nohjason.cheongfordo.screens.quiz.quiz_play.SeletX
 import com.nohjason.cheongfordo.screens.quiz.quiz_main.QuizMainScreen
+import com.nohjason.cheongfordo.screens.search.Search
 
 @SuppressLint("ComposableDestinationInComposeScope")
 @Composable
 fun NavGraph(
     navController: NavHostController,
+//    applicationContext: Context,
+//    lifecycleScope: LifecycleCoroutineScope,
+    loginViewModel: LoginViewModel,
+    quizViewModel: QuizViewModel = hiltViewModel()
 ) {
-    val quizViewModel: QuizViewModel = hiltViewModel()
+    // 토큰 가져오기 (예시, 실제 구현에 맞게 수정)
 //    val preferences = getPreferences()
 //    val token = getFromPreferences(preferences, "token")
-    val context = LocalContext.current
-//    val data = profileViewModel.profileData.collectAsState().value
+
+//    val startDestination = if (token.isNullOrEmpty()) {
+//        Screens.FirstScreen.rout
+//    } else {
+//        BottomScreen.Home.rout
+//    }
 
     NavHost(
         navController = navController,
         startDestination = BottomScreen.Home.rout,
+        enterTransition = { fadeIn(animationSpec = tween(0)) }
     ) {
-
-        composable(Screens.ChatScreen.rout) {
-            ChatScreen(naviController = navController)
-        }
 
         composable(Screens.FirstScreen.rout) {
             FirstScreen(navController = navController)
         }
 
-        //singup
-        composable(Screens.IdScreen.rout) {
-            IdScreen(navController = navController)
-        }
-        composable(Screens.PasswordScreen.rout) {
-            PasswordScreen(navController = navController)
-        }
-        composable(Screens.EmailScreen.rout) {
-            EmailScreen(navController = navController)
-        }
-        composable(Screens.LikeScreen.rout) {
-            LikeScreen(navController = navController)
-        }
-        composable(Screens.SelectJobScreen.rout) {
-            SelectJobScreen(navController = navController)
-        }
-
-        //login
         composable(Screens.Login.rout) {
             LoginScreen(navController = navController)
         }
 
-        // 튜토리얼
+        composable(Screens.IdScreen.rout) {
+            IdScreen(navController = navController)
+        }
+
+        composable(Screens.PasswordScreen.rout) {
+            PasswordScreen(navController = navController)
+        }
+
+        composable(Screens.EmailScreen.rout) {
+            EmailScreen(navController = navController)
+        }
+
+        composable(Screens.LikeScreen.rout) {
+            LikeScreen(navController = navController)
+        }
+
+        composable(Screens.SelectJobScreen.rout) {
+            SelectJobScreen(navController = navController)
+        }
+
+        composable(Screens.ChatScreen.rout) {
+            ChatScreen(naviController = navController)
+        }
+
         composable(BottomScreen.Rout.rout) {
             Rout(navController = navController)
         }
 
-        // 뉴스
         composable(BottomScreen.News.rout) {
             NewsScreen(navController = navController)
         }
 
-        // 홈
         composable(BottomScreen.Home.rout) {
-            HomeScreen(
-                navController = navController,
-            )
+            HomeScreen(navController = navController)
         }
 
-        // 프로필
         composable(BottomScreen.Profile.rout) {
-            LaunchedEffect(Unit) {
-//                profileViewModel.getProfile(token)
-            }
-            ProfileMAinScreen(navHostController = navController, profileData = profileData)
-        }
-
-        //저장목록
-        composable(Screens.Directory.rout) {
-            DirecScreen()
-        }
-
-        //칭호
-        composable(Screens.Alias.rout){
-            AliasScreen(level = profileData.level, exp = profileData.exp, navController = navController)
-        }
-
-        // 포도알
-        composable(Screens.Grapes.rout + "/{id}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id") ?: "0"
-            Grapes(
-                id = id.toInt(),
-                navController = navController,
-            )
-        }
-
-        // 포도씨
-        composable(Screens.Grape.rout + "/{id}/{title}") { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id") ?: "0"
-            val title = backStackEntry.arguments?.getString("title") ?: ""
-            Grape(
-                navController = navController,
-                gpseId = id.toInt(),
-                title = title,
-            )
-        }
-
-        // 용어
-        composable(Screens.Term.rout + "/{text}") { backStackEntry ->
-            val text = backStackEntry.arguments?.getString("text") ?: ""
-            TermScreen(text, navController = navController)
-        }
-
-
-        // 로그인
-        composable(
-            route = Screens.Signup.rout,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(700)
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(700)
-                )
-            }
-        ) {
-//            SelfSignUpScreen(
-//                navController = navController
+            // 필요시 LaunchedEffect 등으로 프로필 데이터 로드 가능
+//            ProfileMAinScreen(
+//                navHostController = navController,
+//                token = token,
+//                loginViewModel = loginViewModel,
+//                direcViewModel = DirecViewModel()
 //            )
         }
 
+        composable(Screens.Directory.rout) {
+            DirecScreen( navController = navController)
+        }
 
+        composable(Screens.Alias.rout) {
+            AliasScreen(navHostController = navController)
+        }
 
+        composable(Screens.Search.rout) {
+            Search(navController = navController)
+            // 중첩 composable 주의: 필요시 분리 권장
+            composable(Screens.Alias.rout) {
+                AliasScreen(navHostController = navController)
+            }
+        }
 
+        composable(Screens.Grapes.rout + "/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
+            Grapes(id = id, navController = navController)
+        }
 
-        // 퀴즈
-        composable(BottomScreen.Quiz.rout) {
+        composable(Screens.Grape.rout + "/{id}/{title}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
+            val title = backStackEntry.arguments?.getString("title") ?: ""
+            Grape(navController = navController, gpseId = id, title = title)
+        }
+
+        composable(Screens.Term.rout + "/{text}") { backStackEntry ->
+            val text = backStackEntry.arguments?.getString("text")?.replace("@", "/") ?: ""
+            TermScreen(text, navController = navController)
+        }
+
+        // 퀴즈 관련 화면들 (애니메이션 포함)
+        composable(
+            BottomScreen.Quiz.rout
+        ) {
             QuizMainScreen(
                 navHostController = navController,
-                quizViewModel = quizViewModel
+                quizViewModel = quizViewModel,
             )
         }
 
-        // 퀴즈 엔딩 화면
         composable(
-            Screens.QuizPlayScreen.rout,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(500)
-                )
-            }
-        ) { backStackEntry ->
-            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
-        }
-
-// 퀴즈 플레이 화면
-        composable(
-            Screens.QuizPlayScreen.rout,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(500)
-                )
-            }
-        ) { backStackEntry ->
-            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
-        }
-
-// 퀴즈 선택 X 화면
-        composable(
-            Screens.QuizSelectX.rout,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(500)
-                )
-            }
-        ) { backStackEntry ->
-            SeletX(navHostController = navController, quizViewModel = quizViewModel)
-        }
-
-// 퀴즈 선택 O 화면
-        composable(
-            Screens.QuizSelectO.rout, // 기존에 "quizplay"로 되어있는데, 필요하면 Screens.QuizSelectO.rout 등으로 변경
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(500)
-                )
-            }
-        ) { backStackEntry ->
+            Screens.QuizSelectO.rout,
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+        ) {
             SeletO(navHostController = navController, quizViewModel = quizViewModel)
         }
 
-
-
-
-
-        //모르는거
         composable(
-            route = Screens.Question.rout,
+            Screens.QuizSelectX.rout,
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
         ) {
-
+            SeletX(navHostController = navController, quizViewModel = quizViewModel)
         }
+
+        composable(
+            Screens.QuizPlayScreen.rout,
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+        ) {
+            QuizPlayScreen(navHostController = navController, quizViewModel = quizViewModel)
+        }
+
+        composable(
+            Screens.QuizEndScreen.rout,
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+        ) {
+            QuizEndScreen(quizViewModel = quizViewModel, navController = navController)
+        }
+
     }
 }

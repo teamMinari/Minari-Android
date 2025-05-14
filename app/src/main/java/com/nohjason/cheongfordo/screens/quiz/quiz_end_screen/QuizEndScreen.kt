@@ -1,5 +1,6 @@
 package com.nohjason.cheongfordo.screens.quiz.quiz_end_screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,16 +34,25 @@ import com.nohjason.cheongfordo.navigation.bottombar.BottomScreen
 import com.nohjason.cheongfordo.screens.quiz.data.QuizViewModel
 import com.nohjason.cheongfordo.screens.ui.titlebar.TitleBar
 import com.nohjason.cheongfordo.ui.theme.MinariBlue
+import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_medium
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @Composable
 fun QuizEndScreen(
     quizViewModel: QuizViewModel,
-    navController: NavController
+    navController: NavController,
 ){
     val playDataState = quizViewModel.playData.collectAsState()
     val playData = playDataState.value
     val point = playData?.point ?: 0
     val current = playData?.userCurrent ?: 0
+//    val reqPoint = PointRequest( pointToAdd = point)
+
+    BackHandler(enabled = true){
+        navController.navigate(BottomScreen.Quiz.rout)
+    }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -51,6 +60,8 @@ fun QuizEndScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ){
+//        quizViewModel.postPoint(token=token, point=reqPoint)
+//        println("quizScreen"+reqPoint)
 
         TitleBar(onClick = { navController.navigate(BottomScreen.Quiz.rout) })
         Box(modifier = Modifier.padding(top = 50.dp)) {
@@ -64,29 +75,29 @@ fun QuizEndScreen(
         }
         Text(
             text = "정말 대단해요!",
-            fontWeight = FontWeight.SemiBold,
+            fontFamily = pretendard_semibold,
             fontSize = 30.sp
         )
 
         val currentText = buildAnnotatedString {
             // "총 " 부분
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Medium, fontSize = 20.sp)) {
+            withStyle(style = SpanStyle(fontFamily = pretendard_medium, fontSize = 20.sp)) {
                 append("총 ")
             }
 
             // correctAnswer.toString() 부분
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color(0xFF373DD6))){ // 여기서 color는 0xFF37으로 설정합니다.
+            withStyle(style = SpanStyle(fontFamily = pretendard_bold, fontSize = 20.sp, color = Color(0xFF373DD6))){ // 여기서 color는 0xFF37으로 설정합니다.
                 append(current.toString())
             }
 
             // "문제를 맞췄어요!" 부분
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Medium, fontSize = 20.sp)) {
+            withStyle(style = SpanStyle(fontFamily = pretendard_medium, fontSize = 20.sp)) {
                 append("문제를 맞췄어요!")
             }
         }
         Text(
             text = currentText,
-            fontWeight = FontWeight.Medium,
+            fontFamily = pretendard_medium,
             fontSize = 20.sp
         )
 
@@ -108,16 +119,16 @@ fun QuizEndScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(
-                text = "My 포인트",
+                text = "획득한 포인트",
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold,
+                fontFamily = pretendard_semibold,
                 fontSize = 20.sp
             )
             Spacer(modifier = Modifier.width(38.dp))
             Text(
                 text = point.toString()+"P",
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
+                fontFamily = pretendard_bold,
                 fontSize = 40.sp
             )
         }

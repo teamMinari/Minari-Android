@@ -2,8 +2,11 @@ package com.nohjason.cheongfordo.network
 
 import com.nohjason.cheongfordo.network.response.AddDeleteTerm
 import com.nohjason.cheongfordo.network.response.BookResponse
+import com.nohjason.cheongfordo.network.response.FinishLearn
 import com.nohjason.cheongfordo.network.response.GetAllLikesTerm
-import com.nohjason.cheongfordo.network.response.GetTerm
+import com.nohjason.cheongfordo.network.response.GetAllTermsResponse
+import com.nohjason.cheongfordo.network.response.GetSearchTerm
+import com.nohjason.cheongfordo.network.response.QuizData
 import com.nohjason.cheongfordo.network.response.Quize
 import com.nohjason.cheongfordo.network.response.rout.Grape
 import com.nohjason.cheongfordo.network.response.rout.GrapeSeed
@@ -21,12 +24,16 @@ import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.Dire
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecGpsResponse
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecGpseResponse
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecTermResponse
+import com.nohjason.cheongfordo.screens.profile.profile_data.LogOutResponse
 import com.nohjason.cheongfordo.screens.rout.response.GetAllNews
 import com.nohjason.cheongfordo.screens.rout.response.LikesResponse
 import com.nohjason.cheongfordo.screens.profile.profile_data.ProfileResponse
+import com.nohjason.cheongfordo.screens.quiz.data.PointRequest
+import com.nohjason.cheongfordo.screens.quiz.data.PointResponse
 import com.nohjason.cheongfordo.screens.quiz.data.QuestionResponse
 import com.nohjason.myapplication.network.response.Term
 import com.nohjason.myapplication.network.response.TermResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -34,16 +41,11 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("gps/category")
-    suspend fun getGpsByCategory(
-        @Header("Authorization") token: String,
-        @Query("age") age: String,
-        @Query("work") work: String
-    ): Response<GrapesAll>
 
     @POST("/chat")
     suspend fun chat(
@@ -61,16 +63,12 @@ interface ApiService {
         @Body body: RefreshTokenRequest
     ): Call<RefreshTokenResponse>
 
-    @GET("/terms/all")
-    suspend fun getTerms(
-        @Header("Authorization") token: String
-    ): List<TermResponse>
-
     @GET("/terms")
-    suspend fun getOneTerm(
-        @Query("termNm") termNm: String,
+    suspend fun getAlTerms(
         @Header("Authorization") token: String,
-    ): Term
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Response<GetAllTermsResponse>
 
     @PATCH("/likes/toggle")
     suspend fun addDeleteTerm(
@@ -97,17 +95,25 @@ interface ApiService {
     // 포도송이 전체 조회
     @GET("/gps")
     suspend fun getAllGps(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): Response<GrapesAll>
 
-    // 포도알 조회
+    // 포도송이 전체 조회
+    @GET("/gps/category")
+    suspend fun getGpsCategory(
+        @Header("Authorization") token: String,
+        @Query("age") age: String?,
+        @Query("work") work: String?
+    ): Response<GrapesAll>
+
+    // 포도송이일일
     @GET("/gps/{gpsId}")
     suspend fun getGps(
         @Header("Authorization") token: String,
         @Path("gpsId") gpsId: Int,
     ): Response<Grapes>
 
-    // 포도씨 전체 조회
+    // 포도알 전체 조회
     @GET("/gp/{gpId}")
     suspend fun getAllGrape(
         @Header("Authorization") token: String,
@@ -121,6 +127,7 @@ interface ApiService {
         @Path("gpseId") gpseId: Int,
     ): Response<GrapeSeed>
 
+    //포도씨 퀴즈 조회
     @GET("/questions/{questionIdx}")
     suspend fun getQuize(
         @Header("Authorization") token: String,
@@ -139,15 +146,34 @@ interface ApiService {
     @GET("/news")
     suspend fun getAllNews(
         @Header("Authorization") token: String,
-        @Query("category") category: String
+        @Query("category") category: String,
     ): Response<GetAllNews>
 
     // 단어 용어 가져오기
-    @GET("/terms/name/{termNm}")
-    suspend fun getTerm(
+//    @GET("/terms/name/{termNm}")
+//    suspend fun getTerm(
+//        @Header("Authorization") token: String,
+//        @Path("termNm") termNm: String
+//    ): Response<GetTerm>
+
+//    @GET("/terms/{termId}")
+//    suspend fun getTerm(
+//        @Header("Authorization") token: String,
+//        @Path("termId") termId: Int
+//    ): Response<GetTerm>
+
+    // 검색된 용어 가져오기
+    @GET("/terms/keyword")
+    suspend fun getSearchTerm(
+        @Header("Authorization") token: String,
+        @Query("keyword") keyword: String
+    ): Response<GetSearchTerm>
+
+    @GET("/termary/summarize/{termNm}")
+    suspend fun getEasyTerm(
         @Header("Authorization") token: String,
         @Path("termNm") termNm: String
-    ): Response<GetTerm>
+    ): Response<ResponseBody>
 
     // 용어 좋아요 전체 가져오기
     @GET("/likes/term")
@@ -161,32 +187,61 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<ProfileResponse>
 
+    //사용자 학습 완료
+    @PATCH("/learn")
+    suspend fun finishLearn(
+        @Header("Authorization") token: String,
+        @Query("category") category: String,
+        @Query("id") id: Int,
+    ): Response<FinishLearn>
+
     //퀴즈 문제
     @GET("/questions")
     suspend fun getQuestion(
         @Header("Authorization") token: String,
     ): QuestionResponse
 
+    @POST("/member/givePoint")
+    suspend fun postPoint(
+        @Header("Authorization") token: String,
+        @Body pointRequest: PointRequest
+    ):  Response<PointResponse>
+
+    @GET("/questions")
+    suspend fun getAllQuestion(
+        @Header("Authorization") token: String,
+    ): Response<QuizData>
+
+    @PUT("/questions")
+    suspend fun quizUpdate(
+        @Header("Authorization") token: String,
+        @Query("qtIdx") qtIdx: Int
+    ): Response<QuizData>
+
     //저장목록
     @GET("/likes/term")
     suspend fun getDiercTerm(
         @Header("Authorization") token: String
-    ): DirecTermResponse
+    ): Response<DirecTermResponse>
 
     @GET("/likes/gpse")
     suspend fun getDiercGpse(
         @Header("Authorization") token: String
-    ): DirecGpseResponse
+    ): Response<DirecGpseResponse>
 
     @GET("/likes/gps")
     suspend fun getDiercGps(
         @Header("Authorization") token: String
-    ): DirecGpsResponse
+    ): Response<DirecGpsResponse>
 
     @GET("/likes/gp")
     suspend fun getDierctGp(
         @Header("Authorization") token: String
-    ): DirecGpResponse
-}
+    ): Response<DirecGpResponse>
 
-// test
+    //로그아웃
+    @GET("/member/logout")
+    suspend fun getLogout(
+        @Header("Authorization") token: String
+    ): Response<LogOutResponse>
+}

@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecViewModel
 import com.nohjason.cheongfordo.screens.ui.titlebar.TitleBar
 
@@ -22,21 +22,16 @@ import com.nohjason.cheongfordo.screens.ui.titlebar.TitleBar
 fun DirecScreen(
     direcViewModel: DirecViewModel = hiltViewModel(),
 //    token: String,
+    navController: NavController,
 ){
-
-    LaunchedEffect(Unit) {
-        direcViewModel.getDirecGp()
-        direcViewModel.getDirecGps()
-        direcViewModel.getDirecGpse()
-        direcViewModel.getDirecTerm()
-    }
-    val term = direcViewModel.direcTermData.collectAsState().value
-    val gpse = direcViewModel.direcGpseData.collectAsState().value
-    val gps = direcViewModel.direcGpsData.collectAsState().value
-    val gp = direcViewModel.direcGpData.collectAsState().value
+    direcViewModel.getDirecTerm() // Term 데이터 호출
+    direcViewModel.getDirecGpse() // Gpse 데이터 호출
+    direcViewModel.getDirecGps() // Gps 데이터 호출
+    direcViewModel.getDirecGp() // Gp 데이터 호출
 
 
     val scrollState = rememberScrollState()
+
 
     Column (
         modifier = Modifier
@@ -45,17 +40,17 @@ fun DirecScreen(
             .verticalScroll(scrollState)
     ) {
         TitleBar(
-            title = "저장소 이름",
+            title = "저장목록",
+            onClick = {navController.popBackStack()}
         )
         Spacer(modifier = Modifier.height(15.dp))
 
-        TutorialList(
-            gpseItem = gpse?.data,
-            gpsItem = gps?.data,
-            gpItem = gp?.data
-        )
+        TutorialList(direcViewModel = direcViewModel, navController = navController)
+
         Spacer(modifier = Modifier.height(15.dp))
-        TermList(termItem = term?.data)
+
+        TermList(direcViewModel = direcViewModel, navController = navController)
+
         Spacer(modifier = Modifier.height(110.dp))
 
     }

@@ -22,9 +22,13 @@ data class LikeList(
     val name: List<String>
 )
 
-
 enum class TermDifficulty {
     LV_1,
     LV_2,
     LV_3
 }
+
+data class LogOutResponse(
+    val status: Int,
+    val message: String
+)

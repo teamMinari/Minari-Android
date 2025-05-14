@@ -102,10 +102,10 @@ fun QuizMainScreen(
                     type = "경제퀴즈",
                     onClick = {
                         coroutineScope.launch {
-                            val qtAll = quizViewModel.fetchQuestions()
-                            val dataList = selectPlayData(qestionAll = qtAll)
-                            quizViewModel.initializePlayData(data = dataList)
-                            navHostController.navigate(Screens.QuizPlayScreen.rout)
+//                            val qtAll = quizViewModel.fetchQuestions()
+//                            val dataList = selectPlayData(qestionAll = qtAll)
+//                            quizViewModel.initializePlayData(data = dataList)
+//                            navHostController.navigate(Screens.QuizPlayScreen.rout)
                         }
                     },
                     backgroundColors = listOf(Color(0xFF6889FF), Color(0xFFFF64F5)),
@@ -467,7 +467,8 @@ fun selectPlayData(qestionAll: QuestionResponse): PlayData {
         userCurrent = 0,         // 현재 유저 진행 상황, 0으로 초기화
         point = 0,               // 초기 포인트, 0으로 초기화
         qtNum = 0,               // 첫 번째 문제부터 시작, 0으로 초기화
-        qtList = qtSelected // 10개의 질문을 담은 리스트
+        qtList = qtSelected, // 10개의 질문을 담은 리스트
+        qtLevel = 1
     )
 }
 

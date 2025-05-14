@@ -3,7 +3,6 @@ package com.nohjason.cheongfordo.screens.profile.profile_element
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,25 +16,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @Composable
 fun ProfileButton(
     text: String,
     onClick: () -> Unit
-){
+) {
     val newtext = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+        withStyle(style = SpanStyle(fontFamily = pretendard_semibold)) {
             append("내 ")
         }
-        withStyle(style = SpanStyle(color = Color(0xFF363CD5), fontWeight = FontWeight.Bold)) {
+        withStyle(style = SpanStyle(color = Color(0xFF363CD5), fontFamily = pretendard_bold)) {
             append(text)
         }
-        withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
+        withStyle(style = SpanStyle(fontFamily = pretendard_semibold)) {
             append("\n확인하러 가기>")
         }
     }
@@ -46,35 +46,36 @@ fun ProfileButton(
             .height(90.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(color = Color.White)
-            .clickable { onClick()}
-    ){
-        if(text == "관심"){
+            .clickable { onClick() }
+    ) {
+        if (text == "관심") {
             Icon(
                 modifier = Modifier.padding(start = 24.dp),
                 painter = painterResource(id = R.drawable.ic_interest),
                 contentDescription = null,
                 tint = Color.Unspecified
             )
-        } else{
+        } else {
             Icon(
-                modifier = Modifier.padding(start = 24.dp),
+                modifier = Modifier
+                    .padding(start = 24.dp),
                 painter = painterResource(id = R.drawable.ic_style),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
         }
         Text(
-            modifier = Modifier.padding(top = 40.dp, start = 24.dp),
+            modifier = Modifier
+                .padding(top = 40.dp, start = 24.dp),
             text = newtext,
-            fontWeight = FontWeight.SemiBold
+            fontFamily = pretendard_semibold
         )
-        Spacer(modifier = Modifier.height(14.dp))
     }
 
 }
 
 @Preview
 @Composable
-fun PreButton(){
+fun PreButton() {
     ProfileButton(text = "칭호", onClick = {})
 }

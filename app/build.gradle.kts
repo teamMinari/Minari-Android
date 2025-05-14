@@ -42,13 +42,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
     buildFeatures {
         compose = true
     }
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.1"
-//    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -61,10 +62,10 @@ android {
 
 dependencies {
     //android hilt
+//    implementation("com.google.dagger:hilt-android:2.56.2")
+//    kapt("com.google.dagger:hilt-android-compiler:2.56.2")
     implementation("com.google.dagger:hilt-android:2.56.2")
     kapt("com.google.dagger:hilt-android-compiler:2.56.2")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
 

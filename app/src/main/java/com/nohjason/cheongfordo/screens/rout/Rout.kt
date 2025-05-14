@@ -71,6 +71,7 @@ import com.nohjason.cheongfordo.ui.theme.h4_bold
 import com.nohjason.cheongfordo.ui.theme.pretendard_bold
 import com.nohjason.cheongfordo.ui.theme.pretendard_medium
 import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
+import com.nohjason.minari.screens.rout.GrapeViewModel
 
 @Composable
 fun Rout(

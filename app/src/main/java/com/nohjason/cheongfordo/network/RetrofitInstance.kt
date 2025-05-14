@@ -66,5 +66,3 @@ object NetworkModule {
         .build()
         .create(ApiService::class.java)
 }
-
-

@@ -19,10 +19,6 @@ sealed class Screens(
         title = "Login",
     )
 
-    data object Signup : Screens(
-        rout = "signup",
-        title = "Signup",
-    )
 
     object IdScreen : Screens(
         rout = "id_screen",
@@ -102,5 +98,10 @@ sealed class Screens(
     data object Alias: Screens(
         rout = "myAlias",
         title = "Alias"
+    )
+
+    data object Search: Screens(
+        rout = "search",
+        title = "Search"
     )
 }

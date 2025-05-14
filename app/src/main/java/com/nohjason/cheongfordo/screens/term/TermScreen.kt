@@ -1,23 +1,31 @@
 package com.nohjason.cheongfordo.screens.term
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,51 +46,49 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.mohamedrejeb.richeditor.annotation.ExperimentalRichTextApi
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.nohjason.cheongfordo.R
-import com.nohjason.cheongfordo.screens.ui.text.MinariTextField
+import com.nohjason.cheongfordo.navigation.Screens
+import com.nohjason.cheongfordo.screens.ui.text.MinariInputField
 import com.nohjason.cheongfordo.ui.theme.MinariWhite
-import com.nohjason.cheongfordo.screens.rout.GrapeViewModel
 import com.nohjason.cheongfordo.ui.theme.pretendard_medium
 import com.nohjason.cheongfordo.ui.theme.pretendard_regular
+import com.nohjason.minari.screens.rout.GrapeViewModel
+import kotlinx.coroutines.delay
 
 // home스크린에서 받은 글자를 표시하는 테스트 화면
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalRichTextApi::class)
 @Composable
 fun TermScreen(
     title: String,
     navController: NavController,
     grapeViewModel: GrapeViewModel = hiltViewModel()
 ) {
-    val getTerm by grapeViewModel.getTerm.collectAsState()
-    var text by remember { mutableStateOf("") }
+    val getSearchTerm by grapeViewModel.getSearchTerm.collectAsState()
 //    val preferences = getPreferences()
 //    val token = getFromPreferences(preferences, "token")
 
     LaunchedEffect(key1 = Unit) {
-        grapeViewModel.getTerm( title)
-        grapeViewModel.getAllLikesTerm()
+        grapeViewModel.getEasyTerm(title)
+        while (true) {
+            grapeViewModel.getSearchTerm(title)
+            delay(1000)
+        }
     }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    MinariTextField(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color(0xFFF6F6F6))
-                            .padding(6.dp),
-                        value = text,
-                        onValueChange = { text = it },
-                        onClick = {
-                            grapeViewModel.getTerm(text)
-                            navController.navigate("test/${text}")
-                        }
-                    )
+
                 },
             )
         }
     ) { innerPadding ->
+        var showDialog by remember { mutableStateOf(false) }
+
         LazyColumn(
             modifier = Modifier
                 .background(MinariWhite)
@@ -90,12 +96,13 @@ fun TermScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp)
         ) {
-            if (getTerm != null) {
+            if (getSearchTerm != null) {
+                Log.d("TAG", "TermScreen: $title\n$getSearchTerm")
+                val item = getSearchTerm!!.data
                 item {
-                    val item = getTerm!!.data
                     Column(
                         modifier = Modifier
-                            .fillParentMaxSize()
+                            .fillParentMaxWidth()
                             .background(Color.White)
                             .padding(horizontal = 20.dp)
                     ) {
@@ -104,7 +111,7 @@ fun TermScreen(
                             modifier = Modifier.padding(vertical = 20.dp)
                         ) {
                             LazyRow {
-                                val difficulty = item.termDifficulty[3].toString().toInt()
+                                val difficulty = item[0].termDifficulty[3].toString().toInt()
                                 items(difficulty) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_star),
@@ -116,22 +123,26 @@ fun TermScreen(
                             }
                             Spacer(modifier = Modifier.weight(0.1f))
                             Icon(
-                                painter = painterResource(R.drawable.ic_back),
+                                painter = painterResource(R.drawable.ic_bookmark),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                        grapeViewModel.likes("TERM", item.termId, item.termNm)
+                                        grapeViewModel.likes(
+                                            "TERM",
+                                            item[0].termId,
+                                            item[0].termNm
+                                        )
                                     },
-                                tint = if (getTerm!!.data.termLike) Color.Unspecified else Color.Gray
+                                tint = if (getSearchTerm!!.data[0].termLike) Color.Unspecified else Color.Gray
                             )
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-//                                text = "가계부실위험지수(HDRI)",
-                                text = item.termNm,
+                                text = item[0].termNm,
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.width(200.dp)
                             )
                             Spacer(modifier = Modifier.weight(0.1f))
                             Box(
@@ -139,6 +150,9 @@ fun TermScreen(
                                     .clip(CircleShape)
                                     .background(Color(0xFFFF9900))
                                     .padding(horizontal = 10.dp)
+                                    .clickable {
+                                        showDialog = true
+                                    }
                             ) {
                                 Text(
                                     text = "쉬운 용어 풀이",
@@ -149,11 +163,19 @@ fun TermScreen(
                             }
                         }
                         Divider(modifier = Modifier.padding(vertical = 20.dp))
+                    }
+                }
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .background(Color.White)
+                            .padding(horizontal = 20.dp)
+                    ) {
                         Text(
-//                            text = "가구의 소득 흐름은 물론 금융 및 실물 자산까지 종합적으로 고려하여 가계부채의 부실위험을 평가하는 지표로, 가계의 채무상환능력을 소득 측면에서 평가하는 원리금상 환비율(DSR; Debt Service Ratio)과 자산 측면에서 평가하는 부채/자산비율(DTA; Debt To Asset Ratio)을 결합하여 산출한 지수이다. 가계부실위험지수는 가구의 DSR과 DTA가 각각 40%, 100%일 때 100의 값을 갖도록 설정되어 있으며, 동 지수가 100을 초과하는 가구를 ‘위험가구’로 분류한다. 위험가구는 소득 및 자산 측면에서 모두 취약한 ‘고위험가구’, 자산 측면에서 취약한 ‘고DTA가구’, 소득 측면에서 취약한 ‘고DSR가구’로 구분할 수 있다. 다만 위험 및 고위험 가구는 가구의 채무상환능력 취약성 정도를 평가하기 위한 것이며 이들 가구가 당장 채무상환 불이행, 즉 임계상황에 직면한 것을 의미하지 않는다.",
-                            text = item.termExplain,
+                            text = item[0].termExplain,
                             fontSize = 13.sp,
-                            fontFamily = pretendard_regular
+                            fontFamily = pretendard_regular,
                         )
                         Row {
                             Spacer(modifier = Modifier.weight(0.1f))
@@ -169,7 +191,37 @@ fun TermScreen(
                 item {
                     CircularProgressIndicator()
                 }
+
             }
+        }
+        if (showDialog) {
+            val termResponse =
+                grapeViewModel.getEasyTerm.collectAsState().value // StateFlow로부터 데이터 수집
+            val richTextState = rememberRichTextState()
+            val markdown = termResponse ?: "AI가 용어의 해설을\n가지고 오고 있어요!"
+
+            AlertDialog(
+                onDismissRequest = { showDialog = false },  // 팝업 외부를 눌렀을 때 닫힘
+                text = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+
+                        ) {
+                        if (termResponse == null) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ai),
+                                contentDescription = null
+                            )
+                        }
+                        RichText(
+                            state = richTextState.setMarkdown(markdown),
+                            fontSize = 15.sp
+                        )
+                    }
+                },
+                confirmButton = {
+                },
+            )
         }
     }
 }
@@ -177,5 +229,20 @@ fun TermScreen(
 @Preview
 @Composable
 fun TermTest() {
-    TermScreen("몰라", rememberNavController())
+    TermScreen("내부등급법", rememberNavController())
+}
+
+@OptIn(ExperimentalRichTextApi::class)
+@Preview
+@Composable
+private fun Test() {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        val richTextState = rememberRichTextState()
+        val markdown = "#Test\n\nqwerqwer"
+        Image(painter = painterResource(id = R.drawable.ai), contentDescription = null)
+        RichText(
+            state = richTextState.setMarkdown(markdown),
+            fontSize = 15.sp
+        )
+    }
 }

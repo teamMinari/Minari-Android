@@ -17,12 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nohjason.cheongfordo.screens.profile.profile_data.WebLinkData
+import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @Composable
 fun AliasMainCard(
@@ -31,7 +32,7 @@ fun AliasMainCard(
 ){
     val webLink = WebLinkData()
     val getWebLink = webLink.getTitleAndUrlForLevel(level)
-    val progress = (exp / 100.toFloat()).coerceIn(0f, 1f)
+    val progress = (exp / 100.toFloat()).coerceIn(0f, 1f) //퍼센테이지
     Box(
         modifier = Modifier
             .background(Color.White)
@@ -51,8 +52,8 @@ fun AliasMainCard(
             ){
                 Row {
                     Text(
-                        text = "'${getWebLink.title}'획득하기",
-                        fontWeight = FontWeight.SemiBold,
+                        text = "'${getWebLink.title}' 획득하기",
+                        fontFamily = pretendard_semibold,
                         fontSize = 15.sp
                     )
                 }
@@ -77,7 +78,7 @@ fun AliasMainCard(
                         text = "${exp}xp",
                         color = Color.White,
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = pretendard_bold,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }

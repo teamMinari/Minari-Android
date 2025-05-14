@@ -49,6 +49,7 @@ import com.nohjason.cheongfordo.screens.quiz.QuizeViewModel
 import com.nohjason.cheongfordo.ui.theme.MinariBlue
 import com.nohjason.cheongfordo.ui.theme.MinariWhite
 import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.minari.screens.rout.GrapeViewModel
 
 @Composable
 fun Grape(

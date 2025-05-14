@@ -1,6 +1,8 @@
 package com.nohjason.cheongfordo.screens.quiz.quiz_play
 
+
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,31 +14,32 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.nohjason.cheongfordo.R
 import com.nohjason.cheongfordo.navigation.Screens
+import com.nohjason.cheongfordo.navigation.bottombar.BottomScreen
+import com.nohjason.cheongfordo.screens.quiz.QuizPopup
 import com.nohjason.cheongfordo.screens.quiz.data.QuizViewModel
-import com.nohjason.cheongfordo.ui.theme.MinariBlue600
-import com.nohjason.cheongfordo.ui.theme.MinariGray600
-import com.nohjason.cheongfordo.ui.theme.MinariGray800
-import com.nohjason.cheongfordo.ui.theme.b1_bold
-import com.nohjason.cheongfordo.ui.theme.b2_medium
-import com.nohjason.cheongfordo.ui.theme.h4_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_bold
+import com.nohjason.cheongfordo.ui.theme.pretendard_medium
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -44,18 +47,25 @@ fun SeletX(
     navHostController: NavHostController,
     quizViewModel: QuizViewModel
 ) {
-    // playData를 collectAsState로 구독
-    val playData by quizViewModel.playData.collectAsState()
+    var showPopup by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = true){
+        showPopup = true
+    }
+
+    val playData = quizViewModel.playData.value
 
     val qtNum = playData?.qtNum ?: 0
+
     val qtContents = playData?.qtList?.getOrNull(qtNum)?.qtContents ?: "No content available"
-    val qtAnswer = playData?.qtList?.getOrNull(qtNum)?.qtAnswer ?: false
+    val qtAnswer = playData?.qtList?.getOrNull(qtNum)?.qtAnswer ?: "No answer available"
     val qtCmt = playData?.qtList?.getOrNull(qtNum)?.qtCmt ?: "No comment available"
     val qtSize = playData?.qtList?.size ?: 9
 
-    val context = LocalContext.current
-
-    println(playData)
+    if (playData == null) {
+        CircularProgressIndicator()
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -72,15 +82,16 @@ fun SeletX(
             //문제-------------------------------
             Text(
                 modifier = Modifier.padding(top = 77.dp),
-                color = MinariBlue600,
-                style = h4_bold,
+                color = Color(0xFF363CD5),
+                fontSize = 25.sp,
+                fontFamily = pretendard_semibold,
                 text = "${qtNum + 1}/10"
             )
             Text(
                 modifier = Modifier
                     .padding(top = 10.dp),
-                color = MinariGray600,
-                style = b2_medium,
+                fontSize = 20.sp,
+                fontFamily = pretendard_bold,
                 text = qtContents
             )
 
@@ -145,22 +156,29 @@ fun SeletX(
                 if (qtAnswer == true) {
                     Text(
                         text = "오답",
-                        style = b1_bold,
-                        color = MinariGray800
+                        fontFamily = pretendard_bold,
+                        fontSize = 20.sp
                     )
                 } else {
                     Text(
                         text = "정답",
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = pretendard_bold,
                         fontSize = 20.sp
                     )
                 }
             }
             Text(
+                fontFamily = pretendard_medium,
                 modifier = Modifier.padding(4.dp),
-                text = qtCmt
+                text = qtCmt,
+                fontSize = 15.sp
             )
         }
+
+
+
+        var isClickable by remember { mutableStateOf(true) }
+
         Button(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -172,15 +190,50 @@ fun SeletX(
                 containerColor = Color(0xFF363CD5)
             ),
             onClick = {
-                if (qtNum + 2 > qtSize) {
-                    navHostController.navigate(Screens.QuizEndScreen.rout)
-                } else {
-                    quizViewModel.nextQuestion()
-                    navHostController.navigate(Screens.QuizPlayScreen.rout)
+                if (isClickable) {
+                    isClickable = false // 클릭 후 다시 클릭하지 못하게 설정
+                    if (qtNum + 2 > qtSize) {
+                        navHostController.navigate(Screens.QuizEndScreen.rout)
+                    } else {
+                        quizViewModel.nextQuestion()
+                        navHostController.navigate("quizplay")
+                    }
                 }
-            }
+            },
+            enabled = isClickable
         ) {
-            Text(text = "다음")
+            Text(
+                fontFamily = pretendard_bold,
+                text = "다음",
+                fontSize = 15.sp
+            )
+        }
+
+// 1초 뒤 다시 클릭 가능하도록 설정
+        if (!isClickable) {
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(1000L)
+                isClickable = true
+            }
+        }
+
+        BackHandler(enabled = true){
+            showPopup = true
+        }
+
+        if (showPopup) {
+            QuizPopup(
+                onDismissRequest = {
+                    showPopup = false
+                }, // 취소
+                onConfirmation = {
+                    showPopup = false
+                    navHostController.navigate(BottomScreen.Quiz.rout)
+                },  // 확인
+                dialogTitle = "뒤로 돌아가기",
+                dialogText = "정말로 퀴즈를 종료시겠습니까?",
+                icon = painterResource(id = R.drawable.ic_x)
+            )
         }
     }
 }

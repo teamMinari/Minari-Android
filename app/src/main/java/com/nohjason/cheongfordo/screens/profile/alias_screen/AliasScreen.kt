@@ -14,32 +14,46 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.screens.profile.profile_data.ProfileViewModel
 import com.nohjason.cheongfordo.screens.ui.titlebar.TitleBar
+import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
 
 @Composable
 fun AliasScreen(
-    level: Int,
-    exp: Int,
-    navController: NavController
+    profileViewModel: ProfileViewModel = viewModel(),
+    navHostController: NavHostController,
 ){
+    LaunchedEffect(Unit) {
+        profileViewModel.getProfile()
+    }
+
+    val data = profileViewModel.profileData.collectAsState().value
     val scrollState = rememberScrollState()
     val nameList = remember {
         List(30) { index -> "Title $index" }
+    }
+
+    if (data == null) {
+        // 로딩 UI를 표시합니다. (예: ProgressIndicator)
+        CircularProgressIndicator()
+        return
     }
 
     Column (
@@ -52,20 +66,22 @@ fun AliasScreen(
         TitleBar(
             title = "칭호보기",
             imgResId =  R.drawable.ic_noun,
-            onClick = { navController.popBackStack() }
+            onClick = {
+                navHostController.popBackStack()
+            }
         )
 
         Row(
             modifier = Modifier.padding(end = 230.dp, top = 35.dp)
         ){
             Icon(
-                painter = painterResource(id = R.drawable.ic_noun),
+                painter = painterResource(id = R.drawable.ic_target),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )
             Text(
                 text ="현재 목표 칭호",
-                fontWeight = FontWeight.SemiBold,
+                fontFamily = pretendard_semibold,
                 modifier = Modifier.padding(start = 5.dp)
             )
         }
@@ -79,7 +95,9 @@ fun AliasScreen(
                 .background(color = Color.White),
             contentAlignment = Alignment.Center
         ){
-            AliasMainCard(level = level, exp = exp)
+            data?.let { profile ->
+                AliasMainCard(level = data.level, exp = data.exp)
+            }
         }
 
         Box(
@@ -98,31 +116,25 @@ fun AliasScreen(
                     .wrapContentHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
 
-                nameList.forEachIndexed { index, data ->
-                    AliasCard(level = level, exp = exp, myLevel = index+1)
+                data?.let { profile ->
+                    nameList.forEachIndexed { index, data ->
+                        Spacer(modifier = Modifier.height(15.dp))
+                        AliasCard(level = index+1, exp = profile.exp, myLevel = profile.level)
+                        Spacer(modifier = Modifier.height(15.dp))
 
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    if (index < nameList.size - 1) {
-                        Divider(
-                            color = Color(0xFFECEFFB),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                        )
+                        if (index < nameList.size - 1) {
+                            Divider(
+                                color = Color(0xFFECEFFB),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                            )
+                        }
                     }
-
-                    Spacer(modifier = Modifier.height(15.dp))
                 }
             }
         }
+        Spacer(modifier = Modifier.height(15.dp))
     }
-}
-
-@Preview
-@Composable
-fun PreAliaScreen(){
-
 }

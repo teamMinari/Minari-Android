@@ -1,6 +1,7 @@
 package com.nohjason.cheongfordo.screens.profile.directory_screen.direc_cards
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,19 +22,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.navigation.Screens
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecTerm
 import com.nohjason.cheongfordo.screens.profile.profile_data.TermDifficulty
+import com.nohjason.cheongfordo.ui.theme.pretendard_medium
+import com.nohjason.minari.screens.rout.GrapeViewModel
 
 @Composable
 fun DirecTerm(
-    data: DirecTerm
+    data: DirecTerm,
+    grapeViewModel: GrapeViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val isBookmarked = remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
-            .width(260.dp) // Row의 너비 설정
+            .width(300.dp)
+            .clickable {
+//                grapeViewModel.getSearchTerm(token = token, termNm = data.termNm)
+                navController.navigate(Screens.Term.rout + "/${data.termNm}")
+            }
     ) {
         // 텍스트와 스타 아이콘
         Column(
@@ -74,24 +86,27 @@ fun DirecTerm(
                 overflow = TextOverflow.Ellipsis,
                 color = Color(0xFF7A7A7A),
                 fontSize = 10.sp,
-                fontWeight = FontWeight.Medium
+                fontFamily = pretendard_medium
             )
         }
         
 
-        Icon(
-            painter = painterResource(
-                id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
-                else R.drawable.ic_back
-            ),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .clickable {
-                    isBookmarked.value = !isBookmarked.value
-                    //서버에 아이디 전송
-                }
-        )
+//        Icon(
+//            painter = painterResource(
+//                id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
+//                else R.drawable.minari_book_mark
+//            ),
+//            contentDescription = null,
+//            tint = Color.Unspecified,
+//            modifier = Modifier
+//                .clickable (
+//                    indication = null,
+//                    interactionSource = remember { MutableInteractionSource() }
+//                ) {
+//                    isBookmarked.value = !isBookmarked.value
+//                    grapeViewModel.likes(category = "TERM", id= data.termId)
+//                }
+//        )
         Spacer(modifier = Modifier.height(15.dp))
     }
 }

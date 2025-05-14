@@ -1,6 +1,8 @@
 package com.nohjason.cheongfordo.screens.quiz.data
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,6 +13,10 @@ import com.nohjason.cheongfordo.preferences.PreferencesManager
 import com.nohjason.cheongfordo.screens.quiz.quiz_main.selectPlayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
+import kotlin.random.Random
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,8 +25,18 @@ class QuizViewModel @Inject constructor(
     private val apiService: ApiService
 ) : ViewModel() {
 
+    private val _questionData = MutableStateFlow<QuestionResponse?>(null)
+    val questionData: StateFlow<QuestionResponse?> = _questionData
+
+    private val _pointData = MutableStateFlow<PointResponse?>(null)
+    val pointData: StateFlow<PointResponse?> = _pointData
+
     private val _playData = MutableStateFlow<PlayData?>(null)
     val playData: StateFlow<PlayData?> = _playData
+
+    /**
+     * suspend 함수로 퀴즈 질문 가져오기
+     */
 
     /**
      * 서버에서 퀴즈 리스트 받아오기 (suspend 함수)
@@ -59,12 +75,38 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    // PlayData 초기화 함수
+    /**
+     * 점수 서버 전송 함수 (과거 postPoint)
+     */
+    fun postPoint(point: PointRequest) {
+        viewModelScope.launch {
+            val token = preferencesManager.getToken()
+            if (token.isNullOrEmpty()) {
+                Log.e("QuizViewModel", "postPoint: 토큰 없음")
+                return@launch
+            }
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    apiService.postPoint(token, point)
+                }
+                if (response.isSuccessful) {
+                    _pointData.value = response.body()
+                    Log.d("QuizViewModel", "postPoint: 포인트 서버 통신 성공")
+                } else {
+                    Log.e("QuizViewModel", "postPoint: 서버 응답 에러 - 코드: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("QuizViewModel", "postPoint: 오류 발생", e)
+            }
+        }
+    }
+
+    // PlayData 초기화
     fun initializePlayData(data: PlayData) {
         _playData.value = data
     }
 
-    // 퀴즈를 다음으로 진행하는 함수
+    // 다음 문제로 이동
     fun nextQuestion() {
         _playData.value?.let { data ->
             val newQtNum = data.qtNum + 1
@@ -74,28 +116,45 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    // 점수 업데이트 함수
+    // 점수 업데이트
     fun updatePoints(newPoints: Int) {
         _playData.value?.let { data ->
             _playData.value = data.copy(point = newPoints)
         }
     }
 
+    // 점수 차감 (과거 minusPoints 기능)
+    fun minusPoints() {
+        _playData.value?.let { data ->
+            val minusPoint = when (data.qtLevel) {
+                1 -> 10
+                2 -> 20
+                else -> 40
+            }
+            val updatedPoint = (data.point - minusPoint).coerceAtLeast(0)
+            updatePoints(updatedPoint)
+        }
+    }
+
+    // 현재 진행도 업데이트
     fun updateCurrent(newCurrent: Int) {
         _playData.value?.let { data ->
             _playData.value = data.copy(userCurrent = newCurrent)
         }
     }
 
-    // 정답 제출 함수
+    // 정답 제출 처리 (과거 submitAnswer 기능)
     fun submitAnswer(userAnswer: Boolean, correctAnswer: Boolean) {
         _playData.value?.let { data ->
+            val addPoint = when (data.qtLevel) {
+                1 -> Random.nextInt(30, 41)
+                2 -> Random.nextInt(41, 81)
+                else -> Random.nextInt(81, 101)
+            }
             if (userAnswer == correctAnswer) {
-                updatePoints(data.point + 1)
+                updatePoints(data.point + addPoint)
                 updateCurrent(data.userCurrent + 1)
             }
         }
     }
 }
-
-

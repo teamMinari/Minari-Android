@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nohjason.cheongfordo.screens.ui.text.MinariText
 
@@ -54,10 +53,10 @@ fun NewsCategoryButton(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TestNewsCategory() {
-    NewsCategoryButton(
-        onClick = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun TestNewsCategory() {
+//    NewsCategoryButton(
+//        onClick = {}
+//    )
+//}

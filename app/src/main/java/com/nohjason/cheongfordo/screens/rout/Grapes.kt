@@ -1,6 +1,8 @@
 package com.nohjason.cheongfordo.screens.rout
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,35 +39,46 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nohjason.cheongfordo.R
 import com.nohjason.cheongfordo.navigation.Screens
+import com.nohjason.cheongfordo.network.response.rout.GrapeSeedLessData
 import com.nohjason.cheongfordo.ui.theme.MinariBlue
 import com.nohjason.cheongfordo.ui.theme.MinariWhite
 import com.nohjason.cheongfordo.ui.theme.pretendard_bold
 import com.nohjason.cheongfordo.ui.theme.pretendard_regular
 import com.nohjason.cheongfordo.ui.theme.pretendard_semibold
+import com.nohjason.minari.screens.rout.GrapeViewModel
+import com.nohjason.myapplication.network.MainViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun Grapes(
     navController: NavController,
-    viewModel: GrapeViewModel = hiltViewModel(),
+    viewModel: GrapeViewModel = viewModel(),
     id: Int,
 ) {
 //    val preferences = getPreferences()
 //    val token = getFromPreferences(preferences, "token")
     val gps by viewModel.gpsDetail.collectAsState()
-    LaunchedEffect(key1 = Unit) {
-        viewModel.getGps(
-//            token = token,
-            gpsId = id
-        )
+    LaunchedEffect(key1 = Unit, gps) {
+//        val editor = preferences.edit()
+//        editor.putInt("gpsId", id)
+//        editor.apply() // 데이터를 비동기적으로 저장
     }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            viewModel.getGps(gpsId = id)
+            delay(1000) // 1초마다 새로 고침
+        }
+    }
+
     Scaffold(
         topBar = {
             androidx.compose.material.TopAppBar(
@@ -97,6 +111,7 @@ fun Grapes(
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
+//                Log.d("TAG", "Grapes: ${gps!!.data.gpList.first()}\n${gps!!.data.gpList.last()}")
                 item {
                     Column(
                         modifier = Modifier
@@ -124,27 +139,6 @@ fun Grapes(
                             text = "${gps!!.data.gpsTime}분 - 포도송이 - ${gps!!.data.gpCnt}/${gps!!.data.gpCntMax}포도알",
                             fontFamily = pretendard_regular
                         )
-                        val tag = gps!!.data.gpsAgeGroup
-//                        val tag = gps!!.data.gpTpList
-//                        LazyRow(
-//                            horizontalArrangement = Arrangement.spacedBy(3.dp)
-//                        ) {
-//                            items(tag) { item ->
-//                                Box(
-//                                    modifier = Modifier
-//                                        .clip(CircleShape)
-//                                        .background(MinariBlue)
-//                                        .padding(horizontal = 10.dp)
-//                                ) {
-//                                    Text(
-//                                        text = item.,
-//                                        color = Color.White,
-//                                        fontFamily = pretendard_medium,
-//                                        fontSize = 12.sp
-//                                    )
-//                                }
-//                            }
-//                        }
                         Text(
                             text = gps!!.data.gpsContent,
                             fontFamily = pretendard_regular,
@@ -165,21 +159,21 @@ fun Grapes(
                         }
                     }
                 }
-
                 items(gps!!.data.gpList) { item ->
                     Gpse(
-                        navController,
-                        gpImg = item.gpImg,
+                        navController = navController,
                         title = gps!!.data.gpsName,
                         gpId = item.gpId,
                         gpNm = item.gpNm,
+                        gpImg = item.gpImg,
                         exp = item.gpExp,
                         gpTm = item.gpTm,
                         gpLike = item.gpLike,
                         gpseCnt = item.gpseCnt,
                         gpseCntMax = item.gpseCntMax,
-//                        token = token,
-                        likesClick = { viewModel.likes("GRAPE", item.gpId) }
+                        viewModel = viewModel,
+                        likesClick = { viewModel.likes("GRAPE", item.gpId) },
+//                        state = if (item == gps!!.data.gpList.first()) true else false
                     )
                 }
             }
@@ -288,7 +282,7 @@ fun Gpse(
                     grape!!.data.forEach {
                         Row(
                             modifier = Modifier.clickable {
-                            navController.navigate(Screens.Grape.rout + "/${it.gpseId}/$title")
+                                navController.navigate(Screens.Grape.rout + "/${it.gpseId}/$title")
                             }
                         ) {
                             Text(

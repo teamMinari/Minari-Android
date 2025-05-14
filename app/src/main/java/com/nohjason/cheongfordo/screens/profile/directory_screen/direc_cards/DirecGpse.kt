@@ -1,7 +1,9 @@
 package com.nohjason.cheongfordo.screens.profile.directory_screen.direc_cards
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -11,45 +13,61 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.nohjason.cheongfordo.R
+import com.nohjason.cheongfordo.navigation.Screens
 import com.nohjason.cheongfordo.screens.profile.directory_screen.direc_data.DirecGpse
+import com.nohjason.cheongfordo.ui.theme.pretendard_medium
+import com.nohjason.minari.screens.rout.GrapeViewModel
 
 @Composable
 fun DirecGpse(
-    data: DirecGpse
+    data: DirecGpse,
+    token: String,
+    grapeViewModel: GrapeViewModel,
+    navController: NavController
 ){
     val isBookmarked = remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
-            .width(260.dp) // Row가 부모의 가로 전체를 차지하도록 설정
+            .width(300.dp)
+            .clickable {
+                grapeViewModel.getGpse(gpseId = data.gpseId)
+                navController.navigate(Screens.Grape.rout + "/${data.gpseId}/${data.gpseName}")
+            }
     ){
         Text(
             text = data.gpseName,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Medium
+            fontFamily = pretendard_medium,
+            fontSize = 15.sp,
+            modifier = Modifier.width(230.dp)
         )
         Text(
             text = "(${data.gpseTime}분)",
-            modifier = Modifier
-                .weight(1f),
-            fontWeight = FontWeight.Medium,
-            color = Color(0xFFB2B2B2)
+            fontFamily = pretendard_medium,
+            color = Color(0xFFB2B2B2),
+            fontSize = 15.sp
         )
+        Spacer(modifier = Modifier.weight(1f))
         Icon(
             painter = painterResource(
                 id = if (isBookmarked.value) R.drawable.ic_book_mark_deactivate
-                else R.drawable.ic_back
+                else R.drawable.ic_bookmark
             ),
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
-                .clickable {
+                .clickable (
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
                     isBookmarked.value = !isBookmarked.value
-                    //서버에 아이디 전송
+                    grapeViewModel.likes(category = "GRAPESEED", id= data.gpseId)
                 }
         )
     }
